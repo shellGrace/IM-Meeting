@@ -7,7 +7,7 @@ const webpack = require("webpack");
 const packageJson = require("../package.json");
 const { name } = packageJson;
 
-const entry = path.resolve(SRC_PATH, "./index.tsx");
+const entry = path.resolve(SRC_PATH, "./index.jsx");
 const template = path.resolve(ROOT_PATH, "./public/index.html");
 
 const config = {

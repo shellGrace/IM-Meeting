@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "webpack serve --config ./webpack/webpack.dev.js",
+    "build": "webpack --config ./webpack/webpack.pack.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -35,7 +37,7 @@
     "thread-loader": "3.0.4",
     "url-loader": "4.1.1",
     "webpack": "5.54.0",
-    "webpack-cli": "4.9.1",
+    "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.2.1",
     "webpack-merge": "5.8.0",
     "webpackbar": "5.0.0-3"
