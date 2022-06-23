@@ -1,6 +1,12 @@
 const { ROOT_PATH } = require("./utils/index");
 const path = require("path");
+const webpack = require("webpack");
 const webpackbar = require("webpackbar");
+const data = require("dotenv").config().parsed || {};
+
+const { AGORA_APP_ID = "", AGORA_APP_CERTIFICATE = "" } = data;
+
+console.log("data", data);
 
 module.exports = {
   resolve: {
@@ -8,7 +14,10 @@ module.exports = {
     alias: {
       "@": path.resolve(ROOT_PATH, "src"),
     },
-    symlinks: false,
+    fallback: {
+      crypto: require.resolve("crypto-browserify"),
+      stream: require.resolve("stream-browserify"),
+    },
   },
   module: {
     unknownContextCritical: false,
@@ -46,8 +55,18 @@ module.exports = {
             },
           },
         ],
-      }
+      },
     ],
   },
-  plugins: [new webpackbar()],
+  plugins: [
+    new webpackbar(),
+    new webpack.ProvidePlugin({
+      // process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new webpack.DefinePlugin({
+      AGORA_APP_ID: JSON.stringify(AGORA_APP_ID),
+      AGORA_APP_CERTIFICATE: JSON.stringify(AGORA_APP_CERTIFICATE),
+    }),
+  ],
 };
