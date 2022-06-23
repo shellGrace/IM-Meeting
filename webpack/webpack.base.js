@@ -4,7 +4,7 @@ const webpack = require("webpack");
 const webpackbar = require("webpackbar");
 const data = require("dotenv").config().parsed || {};
 
-const { AGORA_APP_ID = "", AGORA_APP_CERTIFICATE = "" } = data;
+const { AGORA_APP_ID = "", AGORA_APP_CERTIFICATE = "", EASEMOB_APP_KEY = "" } = data;
 
 console.log("data", data);
 
@@ -67,6 +67,7 @@ module.exports = {
     new webpack.DefinePlugin({
       AGORA_APP_ID: JSON.stringify(AGORA_APP_ID),
       AGORA_APP_CERTIFICATE: JSON.stringify(AGORA_APP_CERTIFICATE),
+      EASEMOB_APP_KEY: JSON.stringify(EASEMOB_APP_KEY),
     }),
   ],
 };

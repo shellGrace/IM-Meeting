@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IMManager } from "../../utils";
 import "./index.css";
+
 
 // 登录页
 export const LoginPage = () => {
@@ -11,6 +13,8 @@ export const LoginPage = () => {
   const navigate = useNavigate();
 
   const onClickEnter = async () => {
+    const manager = IMManager.getInstance();
+    manager.initIMSDK(EASEMOB_APP_KEY);
     navigate("main");
   };
 
