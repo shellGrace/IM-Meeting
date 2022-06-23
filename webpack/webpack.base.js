@@ -6,7 +6,7 @@ const data = require("dotenv").config().parsed || {};
 
 const { AGORA_APP_ID = "", AGORA_APP_CERTIFICATE = "", EASEMOB_APP_KEY = "" } = data;
 
-console.log("data", data);
+console.log("dev data", data);
 
 module.exports = {
   resolve: {

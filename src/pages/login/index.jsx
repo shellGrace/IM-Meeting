@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { IMManager } from "../../utils";
 import "./index.css";
-
 
 // 登录页
 export const LoginPage = () => {
@@ -11,6 +11,12 @@ export const LoginPage = () => {
     roomId: "",
   });
   const navigate = useNavigate();
+  const count = useSelector((state) => {
+    console.log(111, state);
+    return state;
+  });
+
+  console.log("count", count);
 
   const onClickEnter = async () => {
     const manager = IMManager.getInstance();
