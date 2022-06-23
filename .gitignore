@@ -1,0 +1,13 @@
+node_modules
+es
+.vscode
+.DS_Store
+release
+build
+dist
+lib
+.env
+env.local
+env.prod
+*.zip
+*.log
