@@ -1,0 +1,8 @@
+.aside {
+  position: relative;
+  flex: 0 0 100px;
+  width: 100px;
+  height: 100%;
+  box-sizing: border-box;
+  border-right: 1px solid rgb(235, 235, 235);
+}

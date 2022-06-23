@@ -9,8 +9,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "agora-rtc-sdk-ng": "4.10.0",
     "@babel/runtime": "^7.18.3",
-    "agora-access-token": "2.0.4"
+    "agora-access-token": "2.0.4",
+    "events": "3.3.0",
+    "react": "17.0.0",
+    "react-dom": "17.0.0",
+    "react-router-dom": "6.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.13.15",
@@ -33,9 +38,6 @@
     "postcss": "8.4.4",
     "postcss-import": "14.0.1",
     "postcss-loader": "4.0.3",
-    "react": "17.0.0",
-    "react-dom": "17.0.0",
-    "react-router-dom": "6.2.1",
     "thread-loader": "3.0.4",
     "url-loader": "4.1.1",
     "style-loader": "3.3.0",
