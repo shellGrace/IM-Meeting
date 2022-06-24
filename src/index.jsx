@@ -7,7 +7,7 @@ import "./reset.css";
 const App = () => {
   return (
     <Provider store={store}>
-      <RouteContainer></RouteContainer>;
+      <RouteContainer></RouteContainer>
     </Provider>
   );
 };
