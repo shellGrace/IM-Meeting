@@ -19,8 +19,8 @@ export const LoginPage = () => {
     manager.initIMSDK(EASEMOB_APP_KEY);
     dispatch(
       addSessionInfo({
-        aaa: "aa",
-        bb: "bbb",
+        userId: sessionInfo.userId,
+        roomId: sessionInfo.roomId,
       })
     );
     navigate("main");

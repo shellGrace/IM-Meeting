@@ -1,6 +1,6 @@
 import { Aside } from "../../components/aside";
 import { ChatContainer } from "../../components/chat-container";
-import { PanelContainer } from "../../components/panel-container";
+import { PanelContainer } from "../../components/panel/panel-container";
 import "./index.css";
 
 // 主页

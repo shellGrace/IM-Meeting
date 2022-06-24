@@ -6,3 +6,37 @@
   box-sizing: border-box;
   border-right: 1px solid rgb(235, 235, 235);
 }
+
+.aside .aside-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.aside .aside-body .item {
+  position: relative;
+  width: 60px;
+  height: 48px;
+  border-radius: 5px;
+  font-size: 10px;
+}
+
+.aside .aside-body .item:not(:first-child) {
+  margin-top: 10px;
+}
+
+.aside .aside-body .item.active {
+  background-color: #e6e6e6;
+}
+
+.aside .aside-body .item .item-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
