@@ -1,8 +1,10 @@
-import { SessionActionTypes } from "./index.type";
+import { SessionActionTypes } from './index.type'
 
 const initState = {
-  aaa: "aaa",
-};
+  userId: '',
+  userName: '',
+  roomId: '',
+}
 
 export function session(state = initState, action) {
   switch (action.type) {
@@ -10,8 +12,8 @@ export function session(state = initState, action) {
       return {
         ...state,
         ...action.payload,
-      };
+      }
     default:
-      return state;
+      return state
   }
 }

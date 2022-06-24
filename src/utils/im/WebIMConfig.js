@@ -3,6 +3,7 @@
  * everyone should copy webim.config.js.demo to webim.config.js
  * and have their own configs.
  * In this way , others won't be influenced by this config while git pull.
+ *
  */
 
 // for react native
@@ -10,23 +11,56 @@
 //     protocol: "https"
 // }
 
-var config = {
+function getUrl() {
+  var apiUrl =
+    (window.location.protocol === 'https:' ? 'https:' : 'http:') +
+    '//a1-hsb.easemob.com'
+  var xmppUrl = 'im-api.easemob.com'
+  if (
+    window.location.href.indexOf('webim-h5.easemob.com') !== -1 ||
+    window.location.href.indexOf('localhost') !== -1 ||
+    window.location.href.indexOf('172.17.2.168') !== -1
+  ) {
+    apiUrl =
+      (window.location.protocol === 'https:' ? 'https:' : 'http:') +
+      '//a1-hsb-ly.easemob.com'
+    xmppUrl = 'im-api.easemob.com'
+  }
+  // else if(window.location.href.indexOf("webim-hsb.easemob.com") !== -1){
+  //     apiUrl = (window.location.protocol === "https:" ? "https:" : "http:") + "//a1-hsb.easemob.com"
+  //     xmppUrl = "im-api-hsb.easemob.com"
+  // }
+  return {
+    apiUrl: apiUrl,
+    xmppUrl: xmppUrl,
+  }
+}
+
+const config = {
   /*
-   * websocket server
-   * im-api-v2.easemob.com/ws 线上环境
-   * im-api-v2-hsb.easemob.com/ws 沙箱环境
+   * XMPP server
    */
-  // socketServer: getUrl().socketUrl, //(window.location.protocol === "https:" ? "https:" : "http:") + "//im-api-v2.easemob.com/ws",
+  xmppURL:
+    (window.location.protocol === 'https:' ? 'https:' : 'http:') +
+    '//im-api-v2.easemob.com/ws',
+  // xmppURL: "im-api.easemob.com",
+  // xmppURL: '172.17.2.139:5280',
   /*
    * Backend REST API URL
-   * a1.easemob.com 线上环境
-   * a1-hsb.easemob.com 沙箱环境
    */
-  // restServer: getUrl().apiUrl, //(window.location.protocol === "https:" ? "https:" : "http:") + "//a1.easemob.com",
+  // apiURL: (location.protocol === 'https:' ? 'https:' : 'http:') + '//a1.easemob.com',
+  // ios must be https!!! by lwz
+  // apiURL: "https://a1.easemob.com",
+  apiURL:
+    (window.location.protocol === 'https:' ? 'https:' : 'http:') +
+    '//a1.easemob.com',
+  // apiURL: (location.protocol === 'https:' ? 'https:' : 'http:') + '//172.17.3.155:8080',
   /*
    * Application AppKey
    */
-  // appkey: 'easemob-demo#cloudclass',
+  appkey: 'easemob-demo#easeim',
+  // appkey: "1108200309157490#bpttest",
+
   /*
    * Application Host
    */
@@ -36,12 +70,7 @@ var config = {
    * @parameter {Boolean} true or false
    */
   https: true,
-
-  /*
-   * 公有云配置默认为 true，
-   * 私有云配置请设置 isHttpDNS = false , 详细文档：http://docs-im.easemob.com/im/web/other/privatedeploy
-   */
-  isHttpDNS: true,
+  isHttpDNS: false,
   /*
    * isMultiLoginSessions
    * true: A visitor can sign in to multiple webpages and receive messages at all the webpages.
@@ -49,35 +78,50 @@ var config = {
    */
   isMultiLoginSessions: true,
   /**
+   * Whether to use window.doQuery()
    * @parameter {Boolean} true or false
    */
-  isSandBox: false, //内部测试环境，集成时设为false
+  isWindowSDK: false,
   /**
-   * Whether to console.log
+   * isSandBox=true:  xmppURL: 'im-api.sandbox.easemob.com',  apiURL: '//a1.sdb.easemob.com',
+   * isSandBox=false: xmppURL: 'im-api.easemob.com',          apiURL: '//a1.easemob.com',
+   * @parameter {Boolean} true or false
+   */
+  isSandBox: false,
+  /**
+   * Whether to console.log in strophe.log()
    * @parameter {Boolean} true or false
    */
   isDebug: true,
   /**
-   * will auto connect the websocket server autoReconnectNumMax times in background when client is offline.
+   * Whether to show logs in strophe
+   * @parameter {Boolean} true or false
+   */
+  isStropheLog: false,
+  /**
+   * will auto connect the xmpp server autoReconnectNumMax times in background when client is offline.
    * won't auto connect if autoReconnectNumMax=0.
    */
-  autoReconnectNumMax: 10,
+  autoReconnectNumMax: 5,
+  /**
+   * the interval secons between each atuo reconnectting.
+   * works only if autoReconnectMaxNum >= 2.
+   */
+  autoReconnectInterval: 2,
   /**
    * webrtc supports WebKit and https only
    */
-  // isWebRTC: window.RTCPeerConnection && /^https\:$/.test(window.location.protocol),
-  /*
-   * Upload pictures or file to your own server and send message with url
-   * @parameter {Boolean} true or false
-   * true: Using the API provided by SDK to upload file to huanxin server
-   * false: Using your method to upload file to your own server
+  isWebRTC:
+    window.RTCPeerConnection && /^https\:$/.test(window.location.protocol),
+  /**
+   *  cn: chinese
+   *  us: english
    */
-  useOwnUploadFun: false,
-
+  i18n: 'cn',
   /*
    * Set to auto sign-in
    */
-  isAutoLogin: false,
+  isAutoLogin: true,
   /**
    * Size of message cache for person to person
    */
@@ -89,21 +133,20 @@ var config = {
    */
   delivery: false,
   /**
-   * Size of message cache for group chating like group, chatroom etc. For use in this demo
+   * Size of message cache for group chating like group, chatroom etc
    */
   groupMessageCacheSize: 200,
   /**
    * 5 actual logging methods, ordered and available:
    * 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'
    */
+
   loglevel: 'ERROR',
 
   /**
-   * enable localstorage for history messages. For use in this demo
+   * enable localstorage for history messages
    */
   enableLocalStorage: true,
+}
 
-  deviceId: 'webim',
-};
-
-export default config;
+export default config

@@ -1,29 +1,39 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { IMManager } from "../../utils";
+import { IMManager,getRandomStr } from "../../utils";
 import { addSessionInfo } from "../../redux/session";
 import "./index.css";
 
 // 登录页
 export const LoginPage = () => {
   const [sessionInfo, setSessionInfo] = useState({
-    userId: "",
-    roomId: "",
+    userId: getRandomStr(8),
+    roomId: getRandomStr(8),
+    userName:getRandomStr(8)
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const onClickEnter = async () => {
-    const manager = IMManager.getInstance();
-    manager.initIMSDK(EASEMOB_APP_KEY);
     dispatch(
       addSessionInfo({
         userId: sessionInfo.userId,
         roomId: sessionInfo.roomId,
+        userName:sessionInfo.userName
       })
     );
-    navigate("main");
+    const manager = IMManager.getInstance();
+    manager.init();
+    await manager.register({
+      username: sessionInfo.userName,
+      password: sessionInfo.userName,
+    })
+    // await manager.login({
+    //   username:"cascas",
+    //   password:"cascas"
+    // })
+    // navigate("main");
   };
 
   return (
@@ -52,6 +62,19 @@ export const LoginPage = () => {
               setSessionInfo((pre) => ({
                 ...pre,
                 userId: e.target.value,
+              }))
+            }
+          ></input>
+        </section>
+        <section className="body-item">
+          <span>User Name</span>
+          <input
+            className="input-wrapper"
+            value={sessionInfo.userName}
+            onChange={(e) =>
+              setSessionInfo((pre) => ({
+                ...pre,
+                userName: e.target.value,
               }))
             }
           ></input>
