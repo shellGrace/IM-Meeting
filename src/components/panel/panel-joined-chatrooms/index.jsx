@@ -8,8 +8,8 @@ export const PanelJoinedChatrooms = () => {
   const manager = IMManager.getInstance();
 
   const getMyGroup = async () => {
-    const res = await manager.getMyGroup();
-    console.log("res", res);
+    const data = (await manager.getMyGroup()).data || []
+    setMyGroups(data)
   };
 
   return (

@@ -57,7 +57,9 @@ export class IMManager extends EventEmitter {
     WebIM.conn.listen({
       onOpened: function () {}, //连接成功回调
       onClosed: function () {}, //连接关闭回调
-      onTextMessage: function (message) {}, //收到文本消息
+      onTextMessage: function (message) {
+        debugger;
+      }, //收到文本消息
       onEmojiMessage: function (message) {}, //收到表情消息
       onPictureMessage: function (message) {}, //收到图片消息
       onCmdMessage: function (message) {
@@ -86,6 +88,11 @@ export class IMManager extends EventEmitter {
       onCreateGroup: function (message) {}, //创建群组成功回执（需调用createGroupNew）
       onMutedMessage: function (message) {}, //如果用户在A群组被禁言，在A群发消息会走这个回调并且消息不会传递给群其它成员
       onChannelMessage: function (message) {}, //收到整个会话已读的回执，在对方发送channel ack时会在这个回调里收到消息
+      onContactInvited: function (msg) {}, // 收到好友邀请
+      onContactDeleted: function () {}, // 被删除时回调此方法
+      onContactAdded: function () {}, // 增加了联系人时回调此方法
+      onContactRefuse: function () {}, // 好友请求被拒绝
+      onContactAgreed: function () {}, // 好友请求被同意
     });
   }
 
@@ -169,6 +176,42 @@ export class IMManager extends EventEmitter {
     });
   }
 
+  // 发送文本消息
+  sendText({
+    msg = "",
+    to = "",
+    chatType = "singleChat", // singleChat |  groupChat
+  }) {
+    return new Promise((resolve, reject) => {
+      var id = WebIM.conn.getUniqueId();
+      var message = new WebIM.message("txt", id);
+      let option = {
+        msg, // 消息内容
+        to, // 接收消息对象 (群组id) （用户id）
+        chatType, // 群聊类型设置为群聊
+        success: function (res) {      
+          resolve();
+        }, // 对成功的相关定义，sdk会将消息id登记到日志进行备份处理
+        fail: function (e) {
+          // 失败原因:
+          // e.type === '603' 被拉黑
+          // e.type === '605' 群组不存在
+          // e.type === '602' 不在群组或聊天室中
+          // e.type === '504' 撤回消息时超出撤回时间
+          // e.type === '505' 未开通消息撤回
+          // e.type === '506' 没有在群组或聊天室白名单
+          // e.type === '501' 消息包含敏感词
+          // e.type === '502' 被设置的自定义拦截捕获
+          // e.type === '503' 未知错误
+          console.error(e);
+          reject(e);
+        },
+      };
+      message.set(option);
+      WebIM.conn.send(message.body);
+    });
+  }
+
   // 查询好友列表
   getContacts() {
     return WebIM.conn.getContacts();
@@ -202,6 +245,95 @@ export class IMManager extends EventEmitter {
       cursor, // 游标
     };
     return WebIM.conn.listGroups(options);
+  }
+
+  // 查询好友列表
+  getRoster() {
+    return WebIM.conn.getRoster();
+  }
+
+  // 添加好友
+  addContact({
+    username = "", // 用户名
+    msg = "", // 消息
+  }) {
+    return WebIM.conn.addContact(username, msg);
+  }
+
+  //  处理好友请求
+  dealInvitation({
+    accept, // 是否接受
+    username, // 用户名
+  }) {
+    if (accept) {
+      return WebIM.conn.acceptInvitation(username);
+    } else {
+      return WebIM.conn.declineInvitation(username);
+    }
+  }
+
+  /**
+   * 获取对话历史消息 支持Promise返回
+   * @param {Object} options
+   * @param {String} options.queue   - 对方用户id（如果用户id内含有大写字母请改成小写字母）/群组id/聊天室id
+   * @param {String} options.count   - 每次拉取条数
+   * @param {Boolean} options.isGroup - 是否是群聊，默认为false
+   * @param {String} options.start - （非必需）起始位置的消息id，默认从最新的一条开始
+   * @param {Function} options.success
+   * @param {Funciton} options.fail
+   */
+  fetchHistoryMessages({ queue = "", isGroup = false, count = 50 }) {
+    var options = {
+      queue, //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
+      isGroup,
+      count,
+    };
+    return WebIM.conn.fetchHistoryMessages(options);
+  }
+
+  //   获取会话列表
+  // 当和一个用户或者在一个群中发消息后，就会自动把对方加到会话列表中，可以通过调用getSessionList去查询会话列表。
+  // 建议一个页面只需要在初始时调用一次。使用该功能需要联系您的商务经理进行开通。（您可以在环信通讯云管理后台首页，扫描二维码联系您的商务经理）
+  // 特别注意：登陆ID不要为大小写混用的ID，拉取会话列表大小写ID混用会出现拉取会话列表为空。
+  getSessionList() {
+    return WebIM.conn.getSessionList();
+    /**
+    返回参数说明
+    channel_infos - 所有会话
+    channel_id - 会话id, username@easemob.com表示单聊，groupid@conference.easemob.com表示群聊
+    meta - 最后一条消息
+    unread_num - 当前会话的未读消息数
+    
+    data{
+        channel_infos:[
+            {
+                channel_id: 'easemob-demo#chatdemoui_username@easemob.com',
+                meta: {},
+                unread_num: 0
+            },
+            {
+                channel_id: 'easemob-demo#chatdemoui_93734273351681@conference.easemob.com',
+                meta: {
+                    from: "easemob-demo#chatdemoui_zdtest@easemob.com/webim_1610159114836",
+                    id: "827197124377577640",
+                    payload: "{"bodies":[{"msg":"1","type":"txt"}],"ext":{},"from":"zdtest","to":"93734273351681"}",
+                    timestamp: 1610161638919,
+                    to: "easemob-demo#chatdemoui_93734273351681@conference.easemob.com"
+                },
+                unread_num: 0
+            }
+        ]
+    }
+    */
+  }
+
+  // 删除会话
+  deleteSession({ channel, chatType = "singleChat", deleteRoam = true } = {}) {
+    WebIM.conn.deleteSession({
+      channel, // 会话 ID（对方的 userID 或群组 ID）。
+      chatType, // 会话类型 singleChat（单聊） groupChat（群聊）。
+      deleteRoam: true, // 是否同时删除服务端漫游消息。
+    });
   }
 }
 

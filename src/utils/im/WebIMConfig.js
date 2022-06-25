@@ -3,7 +3,8 @@ const config = {
 
   restServer: "//a1.easemob.com", // rest Server地址
 
-  appkey: "easemob-demo#chatdemoui", // App key
+  // appkey: "easemob-demo#chatdemoui", // App key
+  appkey: EASEMOB_APP_KEY,
 
   https: false, // 是否使用https
 
