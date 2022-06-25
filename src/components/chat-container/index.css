@@ -96,4 +96,9 @@
   padding: 5px;
   border-radius: 5px;
   display: inline-block;
+  position: absolute;
+  bottom: 50px;
+}
+.send-msg {
+  margin: 3px 3px;
 }

@@ -10,7 +10,6 @@ export const ChatContainer = () => {
 
   const onClickChatAudio = () => {
     setCalling(true); // 不应该加在这里，应该加在被呼叫方 监听到被呼叫消息回调时展示
-    console.log("onClickChat");
   };
 
   const onClickChatVideo = () => {
@@ -22,11 +21,11 @@ export const ChatContainer = () => {
   };
 
   const onClickCalling = () => {
-    console.log("onClickCalling");
+    setCalling(false)
   };
 
   const onClickCancel = () => {
-    console.log("onClickCancel");
+    setCalling(false)
   };
 
   const onClickSendMsg = () => {
@@ -56,7 +55,7 @@ export const ChatContainer = () => {
       <div className="chat-footer">
         <input type="text" className="form-control" placeholder="Enter Message"/>
         <div className="send-box" onClick={onClickSendMsg}>
-          <SvgImg type="send-msg"></SvgImg>
+          <SvgImg className="send-msg" type="send-msg"></SvgImg>
         </div>
       </div>
       {calling && (
