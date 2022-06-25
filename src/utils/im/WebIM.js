@@ -196,7 +196,7 @@ export class IMManager extends EventEmitter {
   }
 
   // 分页获取公开群
-  getPublicListGroups({ limit = 20, cursor = 0 }) {
+  getPublicListGroups({ limit = 20, cursor = 0 } = {}) {
     let options = {
       limit, // 预期每页获取的记录数
       cursor, // 游标
