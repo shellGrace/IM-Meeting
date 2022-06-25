@@ -26,13 +26,17 @@ class AgoraRTCManager extends EventEmitter {
       audioConfig,
       videoConfig
     );
+    console.log('====cameraTrack', cameraTrack);
+    console.log('====microphoneTrack', microphoneTrack);
     this.localVideoTrack = cameraTrack;
     this.localAudioTrack = microphoneTrack;
   }
 
   async join(appid, channel, token = null, uid = null) {
     await this.createLocalTracks();
+    console.log('====createLocalTracks');
     await this.client.join(appid, channel, token, uid);
+    console.log('====join');
     this.listen();
     this.remoteUsers = this.client.remoteUsers || [];
     this.joined = true;

@@ -1,10 +1,16 @@
 import "./index.css";
 import { FC, useState } from "react";
 import { SvgImg } from "../svg-img";
+import VideoContainer from "../video-call";
+import { agoraRTCManager } from "../../utils/rtc";
 
 export const ChatContainer = () => {
   const userProfile = "";
   const userName = "Byrom Guittet";
+
+  const AGORA_APP_ID = 'c224c383433a4cd0b6aec36cb2e606f0'
+  const AGORA_TOKEN = '006c224c383433a4cd0b6aec36cb2e606f0IABFqgKFLgB8Y7mZVpI7NC5pr6zb3oO0bkYF7gbt+6rMv3dkFWwAAAAAEABGROOec124YgEAAQBzXbhi'
+  const roomId = '5348ef'
 
   const [calling, setCalling] = useState(false);
 
@@ -12,8 +18,21 @@ export const ChatContainer = () => {
     setCalling(true); // 不应该加在这里，应该加在被呼叫方 监听到被呼叫消息回调时展示
   };
 
-  const onClickChatVideo = () => {
-    console.log("onClickChatVideo");
+  const onClickChatVideo = async () => {
+    try {
+      await agoraRTCManager.join(AGORA_APP_ID, roomId, AGORA_TOKEN);
+      agoraRTCManager.on("user-published", async (user, mediaType) => {
+        await agoraRTCManager.subscribe(user, mediaType);
+      });
+      agoraRTCManager.on("user-unpublished", async (user, mediaType) => {
+        await agoraRTCManager.unsubscribe(user, mediaType);
+      });
+      await agoraRTCManager.publish();
+    } catch (err) {
+      alert(err.message);
+      await agoraRTCManager.leave();
+      throw err;
+    }
   };
 
   const onClickChatMore = () => {
@@ -21,11 +40,11 @@ export const ChatContainer = () => {
   };
 
   const onClickCalling = () => {
-    setCalling(false)
+    setCalling(false);
   };
 
   const onClickCancel = () => {
-    setCalling(false)
+    setCalling(false);
   };
 
   const onClickSendMsg = () => {
@@ -53,7 +72,11 @@ export const ChatContainer = () => {
       </div>
       <div className="chat-content"></div>
       <div className="chat-footer">
-        <input type="text" className="form-control" placeholder="Enter Message"/>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter Message"
+        />
         <div className="send-box" onClick={onClickSendMsg}>
           <SvgImg className="send-msg" type="send-msg"></SvgImg>
         </div>
@@ -71,6 +94,9 @@ export const ChatContainer = () => {
           </div>
         </div>
       )}
+      <div className="video-container">
+        <VideoContainer></VideoContainer>
+      </div>
     </section>
   );
 };
