@@ -1,9 +1,12 @@
-const initState = {
-  bbb: "bbb",
-};
+import { ChatActionTypes } from "./index.type";
+
+const initState = {};
 
 export function chat(state = initState, action) {
-  switch (action.type) {
+  const { type, payload, options } = action;
+  switch (type) {
+    case ChatActionTypes.SAVE_MESSAGE:
+      break;
     default:
       return state;
   }

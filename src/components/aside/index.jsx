@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 import { SvgImg } from "../svg-img";
 import { changeAsideItem } from "../../redux/ui";
+import { IMManager } from "../../utils/im";
 import "./index.css";
 
 export const Aside = () => {
@@ -11,6 +12,14 @@ export const Aside = () => {
   const onClick = (v) => {
     const newAsideItems = asideItems.map((item) => ({ ...item, active: item.id == v.id }));
     dispatch(changeAsideItem(newAsideItems));
+  };
+
+  const sendCmd = async () => {
+    const manager = IMManager.getInstance();
+    manager.sendCmdMessage({
+      action: "api_call",
+      to: "xxxasvdaasvcsvs",
+    });
   };
 
   return (
@@ -26,6 +35,7 @@ export const Aside = () => {
           </div>
         ))}
       </div>
+      <div onClick={sendCmd}>sendCmd</div>
     </section>
   );
 };

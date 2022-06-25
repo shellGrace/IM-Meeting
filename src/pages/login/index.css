@@ -34,7 +34,8 @@
   margin-top: 50px;
 }
 
-.body-bottom .btn {
+.login-page .btn {
+  box-sizing: border-box;
   padding: 10px 40px;
   border-radius: 2px;
   color: white;

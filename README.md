@@ -16,3 +16,15 @@ npm run dev
 ```bash
 npm run build
 ```
+
+
+
+# TODO
+
+* [x] 前端项目框架
+* [x] 环信im sdk 和 agora rtc sdk 接入
+* [x] ui layout
+* [x] 环信im功能  （登录 注册）
+* [ ] 环信im功能 (cmd 消息)
+* [x]  好友 群组 历史消息
+* [ ] agora rtc （1v1  1 v more）

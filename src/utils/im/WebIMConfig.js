@@ -1,152 +1,28 @@
-/**
- * git do not control webim.config.js
- * everyone should copy webim.config.js.demo to webim.config.js
- * and have their own configs.
- * In this way , others won't be influenced by this config while git pull.
- *
- */
-
-// for react native
-// var location = {
-//     protocol: "https"
-// }
-
-function getUrl() {
-  var apiUrl =
-    (window.location.protocol === 'https:' ? 'https:' : 'http:') +
-    '//a1-hsb.easemob.com'
-  var xmppUrl = 'im-api.easemob.com'
-  if (
-    window.location.href.indexOf('webim-h5.easemob.com') !== -1 ||
-    window.location.href.indexOf('localhost') !== -1 ||
-    window.location.href.indexOf('172.17.2.168') !== -1
-  ) {
-    apiUrl =
-      (window.location.protocol === 'https:' ? 'https:' : 'http:') +
-      '//a1-hsb-ly.easemob.com'
-    xmppUrl = 'im-api.easemob.com'
-  }
-  // else if(window.location.href.indexOf("webim-hsb.easemob.com") !== -1){
-  //     apiUrl = (window.location.protocol === "https:" ? "https:" : "http:") + "//a1-hsb.easemob.com"
-  //     xmppUrl = "im-api-hsb.easemob.com"
-  // }
-  return {
-    apiUrl: apiUrl,
-    xmppUrl: xmppUrl,
-  }
-}
-
 const config = {
-  /*
-   * XMPP server
-   */
-  xmppURL:
-    (window.location.protocol === 'https:' ? 'https:' : 'http:') +
-    '//im-api-v2.easemob.com/ws',
-  // xmppURL: "im-api.easemob.com",
-  // xmppURL: '172.17.2.139:5280',
-  /*
-   * Backend REST API URL
-   */
-  // apiURL: (location.protocol === 'https:' ? 'https:' : 'http:') + '//a1.easemob.com',
-  // ios must be https!!! by lwz
-  // apiURL: "https://a1.easemob.com",
-  apiURL:
-    (window.location.protocol === 'https:' ? 'https:' : 'http:') +
-    '//a1.easemob.com',
-  // apiURL: (location.protocol === 'https:' ? 'https:' : 'http:') + '//172.17.3.155:8080',
-  /*
-   * Application AppKey
-   */
-  appkey: 'easemob-demo#easeim',
-  // appkey: "1108200309157490#bpttest",
+  socketServer: "//im-api-v2.easemob.com/ws", // socket Server地址
 
-  /*
-   * Application Host
-   */
-  Host: 'easemob.com',
-  /*
-   * Whether to use HTTPS
-   * @parameter {Boolean} true or false
-   */
-  https: true,
-  isHttpDNS: false,
-  /*
-   * isMultiLoginSessions
-   * true: A visitor can sign in to multiple webpages and receive messages at all the webpages.
-   * false: A visitor can sign in to only one webpage and receive messages at the webpage.
-   */
-  isMultiLoginSessions: true,
-  /**
-   * Whether to use window.doQuery()
-   * @parameter {Boolean} true or false
-   */
-  isWindowSDK: false,
-  /**
-   * isSandBox=true:  xmppURL: 'im-api.sandbox.easemob.com',  apiURL: '//a1.sdb.easemob.com',
-   * isSandBox=false: xmppURL: 'im-api.easemob.com',          apiURL: '//a1.easemob.com',
-   * @parameter {Boolean} true or false
-   */
-  isSandBox: false,
-  /**
-   * Whether to console.log in strophe.log()
-   * @parameter {Boolean} true or false
-   */
-  isDebug: true,
-  /**
-   * Whether to show logs in strophe
-   * @parameter {Boolean} true or false
-   */
-  isStropheLog: false,
-  /**
-   * will auto connect the xmpp server autoReconnectNumMax times in background when client is offline.
-   * won't auto connect if autoReconnectNumMax=0.
-   */
-  autoReconnectNumMax: 5,
-  /**
-   * the interval secons between each atuo reconnectting.
-   * works only if autoReconnectMaxNum >= 2.
-   */
-  autoReconnectInterval: 2,
-  /**
-   * webrtc supports WebKit and https only
-   */
-  isWebRTC:
-    window.RTCPeerConnection && /^https\:$/.test(window.location.protocol),
-  /**
-   *  cn: chinese
-   *  us: english
-   */
-  i18n: 'cn',
-  /*
-   * Set to auto sign-in
-   */
-  isAutoLogin: true,
-  /**
-   * Size of message cache for person to person
-   */
-  p2pMessageCacheSize: 500,
-  /**
-   * When a message arrived, the receiver send an ack message to the
-   * sender, in order to tell the sender the message has delivered.
-   * See call back function onReceivedMessage
-   */
-  delivery: false,
-  /**
-   * Size of message cache for group chating like group, chatroom etc
-   */
-  groupMessageCacheSize: 200,
-  /**
-   * 5 actual logging methods, ordered and available:
-   * 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'
-   */
+  restServer: "//a1.easemob.com", // rest Server地址
 
-  loglevel: 'ERROR',
+  // appkey: "easemob-demo#chatdemoui", // App key
+  appkey: EASEMOB_APP_KEY,
 
-  /**
-   * enable localstorage for history messages
-   */
-  enableLocalStorage: true,
-}
+  https: false, // 是否使用https
 
-export default config
+  isHttpDNS: false, // 3.0 SDK支持，防止DNS劫持从服务端获取XMPPUrl、restUrl
+
+  isMultiLoginSessions: false, // 是否开启多页面同步收消息，注意，需要先联系商务开通此功能
+
+  isDebug: false, // 打开调试，会自动打印log，在控制台的console中查看log
+
+  autoReconnectNumMax: 2, // 断线重连最大次数
+
+  heartBeatWait: 30000, // 心跳间隔（只在小程序中使用）
+
+  delivery: false, // 是否发送已读回执
+
+  useOwnUploadFun: false, // 是否使用自己的上传方式（如将图片文件等上传到自己的服务器，构建消息时只传url）
+
+  deviceId: "webim", // 设备ID，默认可不传，如果传一个固定值，在没开启多端登录的情况下同一个账号会互踢
+};
+
+export default config;

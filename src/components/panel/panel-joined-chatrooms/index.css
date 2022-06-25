@@ -1,7 +1,15 @@
-.panel {
-  position: relative;
-  flex: 0 0 350px;
-  width: 350px;
-  height: 100%;
-  border-right: 1px solid rgb(235, 235, 235);
+.joined-chatrooms {
+}
+
+.joined-chatrooms .item {
+  margin: 5px;
+  cursor: pointer;
+}
+
+.joined-chatrooms .group-item {
+  margin-top: 10px;
+  padding: 2px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
 }

@@ -13,7 +13,8 @@
   justify-content: space-between;
 }
 
-.left-box {}
+.left-box {
+}
 
 .user-name {
   font-size: 16px;
@@ -97,6 +98,7 @@
   display: inline-block;
   position: absolute;
   bottom: 50px;
+  cursor: pointer;
 }
 .send-msg {
   margin: 3px 3px;
