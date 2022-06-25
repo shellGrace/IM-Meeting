@@ -8,9 +8,9 @@ import "./index.css";
 // 登录页
 export const LoginPage = () => {
   const [sessionInfo, setSessionInfo] = useState({
-    userId: getRandomStr(8),
-    roomId: getRandomStr(8),
-    userName: getRandomStr(8),
+    userId: "",
+    roomId: "",
+    userName: "",
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -1,26 +1,26 @@
-import { UiActionTypes } from "./index.type";
+import { UiActionTypes, AsideItemsEnum } from "./index.type";
 
 const asideItems = [
   {
-    id: "1",
+    id: AsideItemsEnum.Messages,
     name: "Messages",
     active: true,
     svg: "messages",
   },
   {
-    id: "2",
+    id: AsideItemsEnum.Attendees,
     name: "Attendees",
     active: false,
     svg: "attendees",
   },
   {
-    id: "3",
+    id: AsideItemsEnum.JoinedChatrooms,
     name: "Joined Chatrooms",
     active: false,
     svg: "joined-chatrooms",
   },
   {
-    id: "4",
+    id: AsideItemsEnum.AllChatRooms,
     name: "All Chat Rooms",
     active: false,
     svg: "all-chat-rooms",

@@ -1,5 +1,5 @@
 import "./index.css";
 
-export const PanelContainer = () => {
-  return <section className="panel">PanelContainer</section>;
+export const PanelAttendees = () => {
+  return <section className="panel">PanelAttendees</section>;
 };

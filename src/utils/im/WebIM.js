@@ -168,6 +168,41 @@ export class IMManager extends EventEmitter {
       WebIM.conn.send(message.body);
     });
   }
+
+  // 查询好友列表
+  getContacts() {
+    return WebIM.conn.getContacts();
+  }
+
+  // 创建群组
+  createGroupNew({ groupname, desc }) {
+    let options = {
+      data: {
+        groupname, // 群组名
+        desc, // 群组描述
+        members: [], // 用户名组成的数组
+        public: true, // pub等于true时，创建为公开群
+        approval: false, // approval为true，加群需审批，为false时加群无需审批
+        allowinvites: true, // true：允许群成员邀请人加入此群，false：只有群主才可以往群里加人 注意公开群（public：true),则不允许群成员邀请别人加入此群
+        inviteNeedConfirm: false, // 邀请加群，被邀请人是否需要确认。true 为需要被邀请者同意才会进群
+      },
+    };
+    return WebIM.conn.createGroupNew(options);
+  }
+
+  // 获取我的群组
+  getMyGroup() {
+    return WebIM.conn.getGroup();
+  }
+
+  // 分页获取公开群
+  getPublicListGroups({ limit = 20, cursor = 0 }) {
+    let options = {
+      limit, // 预期每页获取的记录数
+      cursor, // 游标
+    };
+    return WebIM.conn.listGroups(options);
+  }
 }
 
 export default WebIM;
