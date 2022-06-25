@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { IMManager,getRandomStr } from "../../utils";
+import { IMManager, getRandomStr } from "../../utils";
 import { addSessionInfo } from "../../redux/session";
 import "./index.css";
 
@@ -10,30 +10,38 @@ export const LoginPage = () => {
   const [sessionInfo, setSessionInfo] = useState({
     userId: getRandomStr(8),
     roomId: getRandomStr(8),
-    userName:getRandomStr(8)
+    userName: getRandomStr(8),
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const manager = IMManager.getInstance();
+    manager.init();
+  }, []);
+
   const onClickEnter = async () => {
+    const manager = IMManager.getInstance();
+    const res = await manager.login({
+      username: sessionInfo.userName,
+      password: sessionInfo.userName,
+    });
     dispatch(
       addSessionInfo({
         userId: sessionInfo.userId,
         roomId: sessionInfo.roomId,
-        userName:sessionInfo.userName
+        userName: sessionInfo.userName,
       })
     );
+    navigate("main");
+  };
+
+  const onClickRegister = async () => {
     const manager = IMManager.getInstance();
-    manager.init();
     await manager.register({
       username: sessionInfo.userName,
       password: sessionInfo.userName,
-    })
-    // await manager.login({
-    //   username:"cascas",
-    //   password:"cascas"
-    // })
-    // navigate("main");
+    });
   };
 
   return (
@@ -80,8 +88,11 @@ export const LoginPage = () => {
           ></input>
         </section>
         <div className="body-bottom">
-          <span className="btn" onClick={onClickEnter}>
-            Enter
+          <span className="btn" onClick={onClickRegister}>
+            注册
+          </span>
+          <span className="btn" onClick={onClickEnter} style={{ marginLeft: 10 }}>
+            登录
           </span>
         </div>
       </section>
