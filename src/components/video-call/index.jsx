@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { agoraRTCManager } from "../../utils/rtc/index";
-import { MediaPlayer } from "./media-player";
+import { MediaPlayer } from "../media-player";
 import "./index.css";
 
 const VideoContainer = () => {

@@ -1,7 +1,8 @@
 import "./index.css";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { SvgImg } from "../svg-img";
 import VideoContainer from "../video-call";
+import AudioContainer from "../audio-call";
 import { agoraRTCManager } from "../../utils/rtc";
 import { IMManager } from "../../utils/im";
 import { useDispatch } from "react-redux";
@@ -20,12 +21,23 @@ export const ChatContainer = () => {
 
   const [calling, setCalling] = useState(false);
   const [videoCalling, setVideoCalling] = useState(false);
+  const [audioCalling, setAudioCalling] = useState(false);
   const [msg, setMsg] = useState("");
+  const [isGroup, setIsgroup] = useState(false);
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
 
+  useEffect(async () => {
+    await manager.init();
+    manager.on("cmd-message", (msg) => {
+      console.log("====cmd-message", msg);
+      setCalling(true) // 收到来电消息展示电话卡片
+    });
+  }, []);
+
   const onClickChatAudio = () => {
-    setCalling(true); // 不应该加在这里，应该加在被呼叫方 监听到被呼叫消息回调时展示
+    // ues1 根据当前用户来传值
+    manager.sendCmdMessage("ues1", "calling", isGroup);
   };
 
   const onClickChatVideo = async () => {
@@ -52,6 +64,7 @@ export const ChatContainer = () => {
 
   const onClickCalling = () => {
     setCalling(false);
+    setAudioCalling(true);
   };
 
   const onClickCancel = () => {
@@ -129,6 +142,11 @@ export const ChatContainer = () => {
               calling
             </button>
           </div>
+        </div>
+      )}
+      {audioCalling && (
+        <div className="audio-area">
+          <AudioContainer></AudioContainer>
         </div>
       )}
       {videoCalling && (
