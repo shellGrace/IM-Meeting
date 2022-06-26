@@ -14,11 +14,12 @@ export const ChatContainer = () => {
   const userProfile = "";
   const name = "Byrom Guittet";
 
-  const AGORA_APP_ID = 'c224c383433a4cd0b6aec36cb2e606f0'
-  const AGORA_TOKEN = '006c224c383433a4cd0b6aec36cb2e606f0IABFqgKFLgB8Y7mZVpI7NC5pr6zb3oO0bkYF7gbt+6rMv3dkFWwAAAAAEABGROOec124YgEAAQBzXbhi'
-  const roomId = '5348ef90oo'
+  const AGORA_APP_ID = "c224c383433a4cd0b6aec36cb2e606f0";
+  const AGORA_TOKEN = "";
+  const roomId = "";
 
   const [calling, setCalling] = useState(false);
+  const [videoCalling, setVideoCalling] = useState(false);
   const [msg, setMsg] = useState("");
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
@@ -28,6 +29,7 @@ export const ChatContainer = () => {
   };
 
   const onClickChatVideo = async () => {
+    setVideoCalling(true)
     try {
       await agoraRTCManager.join(AGORA_APP_ID, roomId, AGORA_TOKEN);
       agoraRTCManager.on("user-published", async (user, mediaType) => {
@@ -129,9 +131,11 @@ export const ChatContainer = () => {
           </div>
         </div>
       )}
-      <div className="video-area">
-        <VideoContainer></VideoContainer>
-      </div>
+      {videoCalling && (
+        <div className="video-area">
+          <VideoContainer></VideoContainer>
+        </div>
+      )}
     </section>
   );
 };
