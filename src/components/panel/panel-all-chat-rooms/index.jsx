@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMManager } from "../../../utils/im";
 import "./index.css";
 
+const manager = IMManager.getInstance();
+
 export const PanelAllChatRooms = () => {
   const [groupname, setGroupname] = useState("");
-
   const [groups, setGroups] = useState([]);
-  const manager = IMManager.getInstance();
+
+  useEffect(()=>{
+    getPublicListGroups()
+  },[])
 
   const createGroupNew = async () => {
-    manager.createGroupNew({
+   await manager.createGroupNew({
       groupname,
       desc: "test desc",
     });
+    await getPublicListGroups()
   };
 
   const getPublicListGroups = async () => {
@@ -20,8 +25,16 @@ export const PanelAllChatRooms = () => {
     setGroups(data);
   };
 
+  const joinGroup = async (groupId) => {
+    await manager.joinGroup({
+      groupId,
+      msg:'我要加入群组'
+    })
+  }
+
   return (
     <section className="all-chat-rooms">
+      <div style={{marginBottom:10}}>All Chat Rooms</div>
       <div>
         <span className="item" onClick={getPublicListGroups}>
           获取所有群组
@@ -42,7 +55,7 @@ export const PanelAllChatRooms = () => {
           <div key={item.groupid} className="group-item">
             <span>{item.groupid}</span>
             <span style={{ marginLeft: 5 }}>{item.groupname}</span>
-            <span className="add-group">加入群组</span>
+            <span className="add-group" onClick={()=>joinGroup(item.groupid)}>加入群组</span>
           </div>
         ))}
       </section>

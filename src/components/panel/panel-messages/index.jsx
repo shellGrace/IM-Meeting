@@ -14,6 +14,7 @@ export const PanelMessages = () => {
 
   return (
     <section className="messages">
+      <div>Messages</div>
       <div onClick={getSessionList} className="item">
         获取会话列表
       </div>

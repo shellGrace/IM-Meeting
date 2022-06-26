@@ -49,32 +49,6 @@ export const LoginPage = () => {
       <section className="login-body">
         <div className="body-header">XXX Meeting</div>
         <section className="body-item">
-          <span>Room ID</span>
-          <input
-            className="input-wrapper"
-            value={sessionInfo.roomId}
-            onChange={(e) =>
-              setSessionInfo((pre) => ({
-                ...pre,
-                roomId: e.target.value,
-              }))
-            }
-          ></input>
-        </section>
-        <section className="body-item">
-          <span>User ID</span>
-          <input
-            className="input-wrapper"
-            value={sessionInfo.userId}
-            onChange={(e) =>
-              setSessionInfo((pre) => ({
-                ...pre,
-                userId: e.target.value,
-              }))
-            }
-          ></input>
-        </section>
-        <section className="body-item">
           <span>User Name</span>
           <input
             className="input-wrapper"
