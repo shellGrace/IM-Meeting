@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMManager } from "../../../utils/im";
 import "./index.css";
+
+const manager = IMManager.getInstance();
 
 export const PanelJoinedChatrooms = () => {
   const [myGroups, setMyGroups] = useState([]);
 
-  const manager = IMManager.getInstance();
+  useEffect(()=>{
+    getMyGroup()
+  },[])
 
   const getMyGroup = async () => {
     const data = (await manager.getMyGroup()).data || []
@@ -14,6 +18,7 @@ export const PanelJoinedChatrooms = () => {
 
   return (
     <section className="joined-chatrooms">
+      <div>Joined Chatrooms</div>
       <div onClick={getMyGroup} className="item">
         获取我的群组
       </div>
