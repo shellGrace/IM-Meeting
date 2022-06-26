@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { agoraRTCManager } from "../../utils/rtc/index";
 import { MediaPlayer } from "../media-player";
+import { SvgImg } from "../svg-img";
 import "./index.css";
 
 const AudioContainer = () => {
@@ -26,6 +27,7 @@ const AudioContainer = () => {
     <section className="audio-container">
       <div className="conversation-wrapper">
         <div className="user-card">
+          <SvgImg className="mic-icon" type="chat-call"></SvgImg>
           <MediaPlayer
             videoTrack={undefined}
             audioTrack={agoraRTCManager.localAudioTrack}
@@ -34,6 +36,7 @@ const AudioContainer = () => {
         {remoteUsers.map((user) => (
           <div className="user-card" key={user.uid}>
             <p className="user-text">{`remote-(${user.uid})`}</p>
+            <SvgImg className="remote-icon" type="chat-call"></SvgImg>
             <MediaPlayer
               width={remoteVideoTrack ? 400 : 0}
               height={remoteAudioTrack ? 300 : 0}

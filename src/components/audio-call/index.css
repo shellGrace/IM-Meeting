@@ -23,9 +23,29 @@
     height: 120px;
     margin: 10px;
     background-color: aquamarine;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .user-text {
     font-size: 13px;
     color: dimgray;
+    position: fixed;
+    top: 20px;
+}
+
+.mic-icon {
+    width: 50px;
+    height: 50px;
+    color: darkgray;
+    position: absolute;
+    top: 50px;
+    left: 70px;
+}
+
+.remote-icon {
+    width: 50px;
+    height: 50px;
+    color: darkgray;
 }
