@@ -16,7 +16,7 @@ export const ChatContainer = () => {
 
   const AGORA_APP_ID = 'c224c383433a4cd0b6aec36cb2e606f0'
   const AGORA_TOKEN = '006c224c383433a4cd0b6aec36cb2e606f0IABFqgKFLgB8Y7mZVpI7NC5pr6zb3oO0bkYF7gbt+6rMv3dkFWwAAAAAEABGROOec124YgEAAQBzXbhi'
-  const roomId = '5348ef'
+  const roomId = '5348ef90oo'
 
   const [calling, setCalling] = useState(false);
   const [msg, setMsg] = useState("");
@@ -129,7 +129,7 @@ export const ChatContainer = () => {
           </div>
         </div>
       )}
-      <div className="video-container">
+      <div className="video-area">
         <VideoContainer></VideoContainer>
       </div>
     </section>

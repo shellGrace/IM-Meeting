@@ -1,4 +1,28 @@
 .video-container {
     width: 800px;
     height: 500px;
+    border: 1px solid #e6e6e6;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: antiquewhite;
+    position: absolute;
+    right: 100px;
+    overflow: auto;
+}
+
+.local-player-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.player-wrapper {
+    width: 180px;
+    height: 120px;
+    background-color: pink;
+    margin: 10px;
+}
+
+.player-text {
+    font-size: 13px;
+    color: dimgray;
 }

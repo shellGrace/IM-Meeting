@@ -4,11 +4,11 @@ import { MediaPlayer } from "./media-player";
 import "./index.css";
 
 const VideoContainer = () => {
-  const [remoteUsers, setRemoteUsers] = useState([])
+  const [remoteUsers, setRemoteUsers] = useState([]);
 
   useEffect(() => {
     agoraRTCManager.on("user-joined", async (user) => {
-      setRemoteUsers([...remoteUsers, user]) // 远端用户渲染
+      setRemoteUsers([...remoteUsers, user]); // 远端用户渲染
     });
   }, []);
 
@@ -16,13 +16,15 @@ const VideoContainer = () => {
     <section className="video-container">
       <div className="player-container">
         <div className="local-player-wrapper">
-          <MediaPlayer
-            videoTrack={agoraRTCManager.localVideoTrack}
-            audioTrack={agoraRTCManager.localAudioTrack}
-          ></MediaPlayer>
+          <div className="player-wrapper">
+            <MediaPlayer
+              videoTrack={agoraRTCManager.localVideoTrack}
+              audioTrack={agoraRTCManager.localAudioTrack}
+            ></MediaPlayer>
+          </div>
           {remoteUsers.map((user) => (
-            <div className="remote-player-wrapper" key={user.uid}>
-              <p className="remote-player-text">{`remoteVideo(${user.uid})`}</p>
+            <div className="player-wrapper" key={user.uid}>
+              <p className="player-text">{`remote-(${user.uid})`}</p>
               <MediaPlayer
                 width={remoteVideoTrack ? 400 : 0}
                 height={remoteAudioTrack ? 300 : 0}
@@ -37,4 +39,4 @@ const VideoContainer = () => {
   );
 };
 
-export default VideoContainer
+export default VideoContainer;
