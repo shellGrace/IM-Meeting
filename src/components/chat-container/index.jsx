@@ -41,7 +41,6 @@ export const ChatContainer = () => {
   };
 
   const onClickChatVideo = async () => {
-    setVideoCalling(true)
     try {
       await agoraRTCManager.join(AGORA_APP_ID, roomId, AGORA_TOKEN);
       agoraRTCManager.on("user-published", async (user, mediaType) => {
@@ -51,6 +50,7 @@ export const ChatContainer = () => {
         await agoraRTCManager.unsubscribe(user, mediaType);
       });
       await agoraRTCManager.publish();
+      setVideoCalling(true)
     } catch (err) {
       alert(err.message);
       await agoraRTCManager.leave();

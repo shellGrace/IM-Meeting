@@ -3,8 +3,8 @@ import React, { useRef, useEffect } from "react";
 export const MediaPlayer = ({
   videoTrack,
   audioTrack,
-  width = 400,
-  height = 300,
+  width = 180,
+  height = 120,
 }) => {
   const container = useRef(null);
 

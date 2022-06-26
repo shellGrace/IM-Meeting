@@ -38,8 +38,8 @@ const AudioContainer = () => {
             <p className="user-text">{`remote-(${user.uid})`}</p>
             <SvgImg className="remote-icon" type="chat-call"></SvgImg>
             <MediaPlayer
-              width={remoteVideoTrack ? 400 : 0}
-              height={remoteAudioTrack ? 300 : 0}
+              width={remoteVideoTrack ? 180 : 0}
+              height={remoteAudioTrack ? 120 : 0}
               videoTrack={undefined}
               audioTrack={remoteAudioTrack}
             ></MediaPlayer>
