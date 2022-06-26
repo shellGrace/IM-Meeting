@@ -49,6 +49,7 @@ export class IMManager extends EventEmitter {
       useOwnUploadFun: WebIM.config.useOwnUploadFun,
     }
     WebIM.conn = new websdk.connection(options)
+    console.log('===WebIM.conn', WebIM.conn)
     this.inited = true
     this.listen()
   }
@@ -64,7 +65,9 @@ export class IMManager extends EventEmitter {
       onEmojiMessage: function (message) {}, //收到表情消息
       onPictureMessage: function (message) {}, //收到图片消息
       onCmdMessage: function (message) {
-        debugger
+        // debugger;
+        console.log('cmd-message', message)
+        this.emit('cmd-message', message)
       }, //收到命令消息
       onAudioMessage: function (message) {}, //收到音频消息
       onLocationMessage: function (message) {}, //收到位置消息

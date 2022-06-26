@@ -10,7 +10,6 @@ export const MediaPlayer = ({
 
   useEffect(() => {
     if (!container.current) return;
-    console.log('videoTrack', videoTrack);
     videoTrack?.play(container.current);
     return () => {
       videoTrack?.stop();
