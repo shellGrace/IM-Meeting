@@ -21,6 +21,7 @@ export const ChatContainer = () => {
 
   const [calling, setCalling] = useState(false)
   const [videoCalling, setVideoCalling] = useState(false)
+  const [audioCalling, setAudioCalling] = useState(false)
   const [msg, setMsg] = useState('')
   const dispatch = useDispatch()
   const { userName } = useSelector((store) => store.session)
