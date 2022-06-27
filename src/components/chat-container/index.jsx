@@ -26,6 +26,7 @@ export const ChatContainer = () => {
   const [videoCalling, setVideoCalling] = useState(false);
   const [audioCalling, setAudioCalling] = useState(false);
   const [msg, setMsg] = useState("");
+  const [msgBoxes, setMsgBoxes] = useState([])
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
   let { channelId, chatType, chatName } = useSelector((store) => store.chat);
