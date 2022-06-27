@@ -1,9 +1,10 @@
-import { ChatActionTypes, CharTypesEnum } from './index.type'
+import { ChatActionTypes, ChatTypesEnum } from './index.type'
 
 const initState = {
-  channelId: '',
-  charType: '', //CharTypesEnum
-  messages: [],
+  channelId: '', // 会话id
+  chatType: '', // ChatTypesEnum 会话类型
+  chatName:"", // 会话名字
+  messages: [], // 会话消息
 }
 
 export function chat(state = initState, action) {
