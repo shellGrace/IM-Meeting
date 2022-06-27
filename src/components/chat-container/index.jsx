@@ -23,6 +23,7 @@ export const ChatContainer = () => {
   const [videoCalling, setVideoCalling] = useState(false)
   const [audioCalling, setAudioCalling] = useState(false)
   const [msg, setMsg] = useState('')
+  const [msgBoxes, setMsgBoxes] = useState([])
   const dispatch = useDispatch()
   const { userName } = useSelector((store) => store.session)
   let { channelId } = useSelector((store) => store.chat)
@@ -69,7 +70,7 @@ export const ChatContainer = () => {
       await agoraRTCManager.leave()
       throw err
     }
-  }
+  };
 
   const onClickChatMore = () => {
     console.log('onClickChatMore')
@@ -85,6 +86,10 @@ export const ChatContainer = () => {
   }
 
   const onClickSendMsg = async () => {
+    // TODO: 消息监听收到
+    const message = { user: "user-xxx", msg }
+    setMsgBoxes([...msgBoxes, message])
+
     // const res = await manager.sendText({
     //   msg,
     //   to: "ascfa",
@@ -135,7 +140,14 @@ export const ChatContainer = () => {
           </div>
         </div>
       </div>
-      <div className="chat-content"></div>
+      <div className="chat-content">
+        {msgBoxes.map((item, index) => (
+          <div key={index} className="mas-box">
+            <span className="msg-user">{item.user}</span>
+            <div className="msg-bubble">{item.msg}</div>
+          </div>
+        ))}
+      </div>
       {channelId && (
         <div className="chat-footer">
           <input
