@@ -3,7 +3,7 @@ export const ChatActionTypes = {
   START_CHAR: 'START_CHAR',
 }
 
-export const CharTypesEnum = {
+export const ChatTypesEnum = {
   SingleChat: 'singleChat',
   GroupChat: 'groupChat',
 }

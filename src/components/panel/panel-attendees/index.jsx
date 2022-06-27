@@ -1,51 +1,52 @@
-import { IMManager } from '../../../utils/im'
-import { useEffect, useState } from 'react'
-import './index.css'
-import { useDispatch } from 'react-redux'
-import { startChar, CharTypesEnum } from '../../../redux/chat'
-import { getRandomStr } from '../../../utils'
+import { IMManager } from "../../../utils/im";
+import { useEffect, useState } from "react";
+import "./index.css";
+import { useDispatch } from "react-redux";
+import { startChat, ChatTypesEnum } from "../../../redux/chat";
+import { transformIdToChannel } from "../../../utils";
 
-const manager = IMManager.getInstance()
+const manager = IMManager.getInstance();
 
 export const PanelAttendees = () => {
-  const [friends, setFriends] = useState([])
-  const [friendName, setFriendName] = useState('')
-  const dispatch = useDispatch()
+  const [friends, setFriends] = useState([]);
+  const [friendName, setFriendName] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getRoster()
-    manager.on('onContactInvited', (message) => {
+    getRoster();
+    manager.on("onContactInvited", (message) => {
       // 收到好友邀请
-      getRoster()
-    })
-    manager.on('onContactAgreed', (message) => {
+      getRoster();
+    });
+    manager.on("onContactAgreed", (message) => {
       // 好友请求被同意
-      getRoster()
-    })
-  }, [])
+      getRoster();
+    });
+  }, []);
 
   const addContact = async () => {
     manager.addContact({
       username: friendName,
-      msg: '请加我好友!',
-    })
-    await getRoster()
-  }
+      msg: "请加我好友!",
+    });
+    await getRoster();
+  };
 
   const getRoster = async () => {
-    const data = (await manager.getRoster()).data || []
-    setFriends(data)
-  }
+    const data = (await manager.getRoster()).data || [];
+    setFriends(data);
+  };
 
-  const onClickStartChar = () => {
+  const onClickStartChat = (id) => {
     // 开启单聊
     dispatch(
-      startChar({
-        channelId: getRandomStr(8),
-        charType: CharTypesEnum.SingleChat,
+      startChat({
+        channelId: transformIdToChannel({ id, type: ChatTypesEnum.SingleChat }),
+        chatType: ChatTypesEnum.SingleChat,
+        chatName: id,
       })
-    )
-  }
+    );
+  };
 
   return (
     <section className="attendees">
@@ -64,10 +65,10 @@ export const PanelAttendees = () => {
       <section>
         {friends.map((item) => (
           <div key={item} className="group-item">
-            <span onClick={onClickStartChar}>{item}</span>
+            <span onClick={() => onClickStartChat(item)}>{item}</span>
           </div>
         ))}
       </section>
     </section>
-  )
-}
+  );
+};

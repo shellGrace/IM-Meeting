@@ -4,8 +4,8 @@ const asideItems = [
   {
     id: AsideItemsEnum.Messages,
     name: "Messages",
-    active: true,
-    svg: "messages",
+    active: true, // 是否高亮
+    svg: "messages", // 图标类型
   },
   {
     id: AsideItemsEnum.Attendees,
