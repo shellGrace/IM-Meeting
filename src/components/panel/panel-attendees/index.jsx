@@ -1,15 +1,16 @@
 import { IMManager } from "../../../utils/im";
 import { useEffect, useState } from "react";
 import "./index.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startChat, ChatTypesEnum } from "../../../redux/chat";
-import { transformIdToChannel } from "../../../utils";
+import { transformIdToChannel, genChannelName } from "../../../utils";
 
 const manager = IMManager.getInstance();
 
 export const PanelAttendees = () => {
   const [friends, setFriends] = useState([]);
   const [friendName, setFriendName] = useState("");
+  const { userName } = useSelector((store) => store.session);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,13 +38,18 @@ export const PanelAttendees = () => {
     setFriends(data);
   };
 
-  const onClickStartChat = (id) => {
+  const onClickStartChat = (name) => {
     // 开启单聊
+    const channelId = transformIdToChannel({ id: name, type: ChatTypesEnum.SingleChat });
+    const chatType = ChatTypesEnum.SingleChat;
+    const to = name;
+    const channelName = genChannelName(userName, to);
     dispatch(
       startChat({
-        channelId: transformIdToChannel({ id, type: ChatTypesEnum.SingleChat }),
-        chatType: ChatTypesEnum.SingleChat,
-        chatName: id,
+        channelId,
+        channelName,
+        chatType,
+        to,
       })
     );
   };
