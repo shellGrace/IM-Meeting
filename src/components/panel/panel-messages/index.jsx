@@ -22,7 +22,7 @@ export const PanelMessages = () => {
   }, []);
 
   const getSessionList = async () => {
-    const data = (await manager.getSessionList()).data || {};
+    const data = (await manager.getSessionList())?.data || {};
     const list = data.channel_infos || [];
     setSessionList(list);
   };

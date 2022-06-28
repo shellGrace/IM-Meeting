@@ -17,7 +17,7 @@ export const PanelJoinedChatrooms = () => {
   }, []);
 
   const getMyGroup = async () => {
-    const data = (await manager.getMyGroup()).data || [];
+    const data = (await manager.getMyGroup())?.data || [];
     setMyGroups(data);
   };
 

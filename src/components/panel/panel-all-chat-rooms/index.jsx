@@ -21,7 +21,7 @@ export const PanelAllChatRooms = () => {
   };
 
   const getPublicListGroups = async () => {
-    const data = (await manager.getPublicListGroups()).data || [];
+    const data = (await manager.getPublicListGroups())?.data || [];
     setGroups(data);
   };
 

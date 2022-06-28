@@ -27,37 +27,23 @@ export const ChatContainer = () => {
   const [videoCalling, setVideoCalling] = useState(false);
   const [audioCalling, setAudioCalling] = useState(false);
   const [msg, setMsg] = useState("");
+  const [callType, setCallType] = useState([]);
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
 
-  // TODO: need work (qinzhen)
-  channelId = "1111";
-  chatName = "方便测试";
-
-  // 如果 from === userName 证明是发出去的消息 显示在右边
-  // 如果 from !== userName 证明是收到的消息 显示在左边
-  const messages = [
-    { from: "xxx", to: "yyy", msg: "我是内容12313" },
-    { from: "xxx", to: "yyy", msg: "我是内容4747" },
-    { from: "yyy", to: "xxx", msg: "我是内容1254" },
-  ];
   let { channelId, chatType, to, channelName, messgaes } = useSelector((store) => store.chat);
 
   useEffect(async () => {
     manager.on("cmd-message", (msg) => {
-      console.log("====cmd-message", msg);
-      setCalling(true); // 收到来电消息展示电话卡片
+      if(msg === "calling-audio" || msg === "calling-video")
+      setCallType(msg)
+      setCalling(true); // 收到来电消息
     });
   }, []);
 
-  const onClickChatAudio = () => {
-    // ues1 根据当前用户来传值
-    manager.sendCmdMessage("ues1", "calling", isGroup);
-  };
-
-  const onClickChatVideo = async () => {
+  const joinChannel = async () => {
     try {
-      await agoraRTCManager.join(AGORA_APP_ID, roomId, AGORA_TOKEN);
+      await agoraRTCManager.join();
       agoraRTCManager.on("user-published", async (user, mediaType) => {
         await agoraRTCManager.subscribe(user, mediaType);
       });
@@ -65,12 +51,25 @@ export const ChatContainer = () => {
         await agoraRTCManager.unsubscribe(user, mediaType);
       });
       await agoraRTCManager.publish();
-      setVideoCalling(true);
     } catch (err) {
       alert(err.message);
       await agoraRTCManager.leave();
       throw err;
     }
+  }
+
+  const onClickChatAudio = async () => {
+    // ues1 根据当前用户来传值
+    manager.sendCmdMessage("ues1", "calling-audio", true);
+    await joinChannel()
+    setAudioCalling(true);
+  };
+
+  const onClickChatVideo = async () => {
+    // 发起视频呼叫
+    // manager.sendCmdMessage("ues1", "calling-video", true);
+    await joinChannel()
+    setVideoCalling(true);
   };
 
   const onClickChatMore = () => {
@@ -78,8 +77,14 @@ export const ChatContainer = () => {
   };
 
   const onClickCalling = () => {
+    // 接通音频通话
+    if (callType === "audio") {
+      setAudioCalling(true);
+    } else {
+      // 接通视频通话
+      setVideoCalling(true);
+    }
     setCalling(false);
-    setAudioCalling(true);
   };
 
   const onClickCancel = () => {
@@ -116,31 +121,31 @@ export const ChatContainer = () => {
       <div className="chat-header">
         <div className="left-box">
           <SvgImg className="user-icon" type={userProfile}></SvgImg>
-          {channelId ? (
-            <>
-              <span className="uesr-name">{to} </span>
-              <span>{chatType === ChatTypesEnum.SingleChat ? "单聊" : "群聊"}</span>
-            </>
-          ) : null}
+          <>
+            <span className="uesr-name">{to} </span>
+            <span>
+              {chatType === ChatTypesEnum.SingleChat ? "单聊" : "群聊"}
+            </span>
+          </>
         </div>
         <div className="right-box">
-          {channelId && (
+          {
             <div className="call-box" onClick={onClickChatAudio}>
               <SvgImg className="call-icon" type="chat-call"></SvgImg>
             </div>
-          )}
-          {channelId && (
+          }
+          {
             <div className="call-box" onClick={onClickChatVideo}>
               <SvgImg className="call-icon" type="video-call"></SvgImg>
             </div>
-          )}
+          }
           <div className="call-box" onClick={onClickChatMore}>
             <SvgImg className="call-icon" type="circle-more"></SvgImg>
           </div>
         </div>
       </div>
       <ChatContent></ChatContent>
-      {channelId && (
+      {
         <div className="chat-footer">
           <input
             type="text"
@@ -153,7 +158,7 @@ export const ChatContainer = () => {
             <SvgImg className="send-msg" type="send-msg"></SvgImg>
           </div>
         </div>
-      )}
+      }
       {calling && (
         <div className="call-card">
           <span className="text">Calling</span>

@@ -5,22 +5,19 @@ import { SvgImg } from "../svg-img";
 import "./index.css";
 
 const AudioContainer = () => {
-  const [remoteUsers, setRemoteUsers] = useState([
-    {
-      uid: "user1",
-    },
-    {
-      uid: "user2",
-    },
-    {
-      uid: "user3",
-    },
-  ]);
+  const [remoteAudioTrack, setRemoteAudioTrack] = useState();
 
-  useEffect(() => {
-    agoraRTCManager.on("user-joined", async (user) => {
-      setRemoteUsers([...remoteUsers, user]); // 远端用户渲染
-    });
+  useEffect(async() => {
+    for (let user of agoraRTCManager.remoteUsers) {
+      user.hasAudio && (await agoraRTCManager.subscribe(user, "audio"));
+      user.audioTrack && setRemoteAudioTrack(user.audioTrack);
+    }
+    // for (let user of agoraRTCManager.remoteUsers) {
+    //   await agoraRTCManager.unsubscribe(user, "audio");
+    //   setRemoteAudioTrack(null);
+    // }
+    // agoraRTCManager.on("user-joined", async (user) => {
+    // });
   }, []);
 
   return (
@@ -33,13 +30,11 @@ const AudioContainer = () => {
             audioTrack={agoraRTCManager.localAudioTrack}
           ></MediaPlayer>
         </div>
-        {remoteUsers.map((user) => (
+        {agoraRTCManager.remoteUsers.map((user) => (
           <div className="user-card" key={user.uid}>
             <p className="user-text">{`remote-(${user.uid})`}</p>
             <SvgImg className="remote-icon" type="chat-call"></SvgImg>
             <MediaPlayer
-              width={remoteVideoTrack ? 180 : 0}
-              height={remoteAudioTrack ? 120 : 0}
               videoTrack={undefined}
               audioTrack={remoteAudioTrack}
             ></MediaPlayer>

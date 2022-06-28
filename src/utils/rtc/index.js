@@ -35,8 +35,8 @@ class AgoraRTCManager extends EventEmitter {
   async join() {
     const appid = "936ec8275ca248d6839ce2fa697d98c5";
     const appCertificate = "e2c7e3c6f23b4450b891903e23ffaffc";
-    const userId = "asdasd";
-    const channel = "asdasd";
+    const userId = "dfvd";
+    const channel = "dfvd";
     const uid = null;
 
     const token = RtmTokenBuilder.buildToken(appid, appCertificate, userId, RtmRole.Rtm_User, 0);

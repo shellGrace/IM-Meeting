@@ -34,7 +34,7 @@ export const PanelAttendees = () => {
   };
 
   const getRoster = async () => {
-    const data = (await manager.getRoster()).data || [];
+    const data = (await manager.getRoster())?.data || [];
     setFriends(data);
   };
 
