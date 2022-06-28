@@ -1,6 +1,7 @@
 import "./index.css";
 import { FC, useState, useEffect, useMemo } from "react";
 import { SvgImg } from "../svg-img";
+import { ChatContent } from "./chat-content";
 import VideoContainer from "../video-call";
 import AudioContainer from "../audio-call";
 import { agoraRTCManager } from "../../utils/rtc";
@@ -26,10 +27,8 @@ export const ChatContainer = () => {
   const [videoCalling, setVideoCalling] = useState(false);
   const [audioCalling, setAudioCalling] = useState(false);
   const [msg, setMsg] = useState("");
-  const [msgBoxes, setMsgBoxes] = useState([])
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
-  let { channelId, chatType, chatName } = useSelector((store) => store.chat);
 
   // TODO: need work (qinzhen)
   channelId = "1111";
@@ -42,9 +41,9 @@ export const ChatContainer = () => {
     { from: "xxx", to: "yyy", msg: "我是内容4747" },
     { from: "yyy", to: "xxx", msg: "我是内容1254" },
   ];
+  let { channelId, chatType, to, channelName, messgaes } = useSelector((store) => store.chat);
 
   useEffect(async () => {
-    await manager.init();
     manager.on("cmd-message", (msg) => {
       console.log("====cmd-message", msg);
       setCalling(true); // 收到来电消息展示电话卡片
@@ -88,19 +87,27 @@ export const ChatContainer = () => {
   };
 
   const onClickSendMsg = async () => {
-    // TODO: 测试消息
-    const message = { user: "user-xxx", msg }
-    setMsgBoxes([...msgBoxes, message])
-
-    const to = chatType == ChatTypesEnum.SingleChat ? chatName : getIdfromChannel(channelId);
-    if (!to) {
-      throw new Error("sned msg err");
-    }
+    const finalTo = chatType == ChatTypesEnum.SingleChat ? to : channelName;
     await manager.sendText({
       msg,
-      to,
+      to: finalTo,
       chatType,
     });
+    const m = {
+      from: userName,
+      to: finalTo,
+      msg,
+      time: new Date().getTime(),
+    };
+    console.log("m", m);
+    dispatch(
+      saveMessage({
+        from: userName,
+        to: finalTo,
+        msg,
+        time: new Date().getTime(),
+      })
+    );
     setMsg("");
   };
 
@@ -111,7 +118,7 @@ export const ChatContainer = () => {
           <SvgImg className="user-icon" type={userProfile}></SvgImg>
           {channelId ? (
             <>
-              <span className="uesr-name">{chatName} </span>
+              <span className="uesr-name">{to} </span>
               <span>{chatType === ChatTypesEnum.SingleChat ? "单聊" : "群聊"}</span>
             </>
           ) : null}
@@ -132,14 +139,7 @@ export const ChatContainer = () => {
           </div>
         </div>
       </div>
-      <div className="chat-content">
-        {msgBoxes.map((item, index) => (
-          <div key={index} className="mas-box">
-            <span className="msg-user">{item.user}</span>
-            <div className="msg-bubble">{item.msg}</div>
-          </div>
-        ))}
-      </div>
+      <ChatContent></ChatContent>
       {channelId && (
         <div className="chat-footer">
           <input

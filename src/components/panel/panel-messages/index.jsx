@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { IMManager } from "../../../utils/im";
 import { ChatTypesEnum, startChat } from "../../../redux/chat";
-import { getIdfromChannel, getCharTypefromChannel, formatTime } from "../../../utils";
+import {
+  getIdfromChannel,
+  getChatTypefromChannel,
+  formatTime,
+  genChannelName,
+} from "../../../utils";
 import "./index.css";
 import { useDispatch } from "react-redux";
 
@@ -9,6 +14,7 @@ const manager = IMManager.getInstance();
 
 export const PanelMessages = () => {
   const [sessionList, setSessionList] = useState([]);
+  const { userName } = useDispatch((store) => store.session);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,11 +27,17 @@ export const PanelMessages = () => {
     setSessionList(list);
   };
 
-  const onClickItem = async (id) => {
+  const onClickItem = async (channelId) => {
+    const chatType = getChatTypefromChannel(channelId);
+    const to = getIdfromChannel(channelId);
+    // TODO:channelName groupid
+    const channelName = chatType == ChatTypesEnum.GroupChat ? to : genChannelName(userName, to);
     dispatch(
       startChat({
-        channelId: id,
-        chatType: getCharTypefromChannel(id), //ChatTypesEnum
+        channelId,
+        channelName,
+        chatType,
+        to,
       })
     );
   };
@@ -45,7 +57,7 @@ export const PanelMessages = () => {
           >
             <span className="name">和 {getIdfromChannel(item.channel_id)} 的聊天</span>
             <span className="type">
-              {getCharTypefromChannel(item.channel_id) == ChatTypesEnum.SingleChat
+              {getChatTypefromChannel(item.channel_id) == ChatTypesEnum.SingleChat
                 ? "单聊"
                 : "群聊"}
             </span>

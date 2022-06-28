@@ -13,8 +13,8 @@ export const getRandomStr = (number) => {
   return res;
 };
 
-// "huice#matadodo_yyy@easemob.com"
-// huice#matadodo_235425423@conference.easemob.com
+// "huice#matadodo_yyy@easemob.com"  => yyy
+// huice#matadodo_235425423@conference.easemob.com  => 235425423
 export const getIdfromChannel = (str) => {
   let isGroup = /\@conference\.easemob\.com$/.test(str);
   let reg = "";
@@ -27,7 +27,7 @@ export const getIdfromChannel = (str) => {
   return res[1];
 };
 
-export const getCharTypefromChannel = (str) => {
+export const getChatTypefromChannel = (str) => {
   let isGroup = /\@conference\.easemob\.com$/.test(str);
   return isGroup ? ChatTypesEnum.GroupChat : ChatTypesEnum.SingleChat;
 };
@@ -50,4 +50,10 @@ export const formatTime = (time) => {
   var hh = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
   var mm = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
   return date.getFullYear() + "-" + month + "-" + currentDate + " " + hh + ":" + mm;
+};
+
+export const genChannelName = (name1, name2) => {
+  let arr = [name1, name2];
+  arr.sort((a, b) => a - b);
+  return arr[0] + "_" + arr[1];
 };
