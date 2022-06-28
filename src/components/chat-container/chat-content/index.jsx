@@ -1,7 +1,7 @@
 import classnames from "classnames";
 import "./index.css";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { IMManager } from "../../../utils/im";
 import { ChatTypesEnum } from "../../../redux/chat";
 
@@ -9,7 +9,11 @@ const manager = IMManager.getInstance();
 
 export const ChatContent = () => {
   const { userName } = useSelector((store) => store.session);
-  const { channelId, to, chatType, channelName, messages } = useSelector((store) => store.chat);
+  const { channelId, to, chatType, channelName, msgMap } = useSelector((store) => store.chat);
+
+  const messages = useMemo(() => {
+    return msgMap[channelId] || [];
+  }, [msgMap, channelId]);
 
   useEffect(async () => {
     if (to) {
@@ -21,6 +25,7 @@ export const ChatContent = () => {
         count: 50,
         format: true,
       });
+      console.log("历史消息 ", res);
     }
   }, [to, channelName]);
 

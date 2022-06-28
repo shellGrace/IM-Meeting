@@ -1,9 +1,10 @@
 import websdk from "easemob-websdk";
 import { EventEmitter } from "events";
+import { saveMessage, ChatTypesEnum } from "../../redux/chat";
 import store from "../../redux";
 import config from "./WebIMConfig";
+import { transformIdToChannel } from "../util";
 
-const appKey = EASEMOB_APP_KEY;
 const PREFIX = "[im] ";
 
 const log = (str) => {
@@ -60,7 +61,29 @@ export class IMManager extends EventEmitter {
       onOpened: function () {}, //连接成功回调
       onClosed: function () {}, //连接关闭回调
       onTextMessage: function (message) {
-        debugger;
+        const finMsg = {
+          from: message.from,
+          to: message.to,
+          msg: message.sourceMsg,
+          time: message.time,
+        };
+        let channelId = "";
+        if (message.type == "chat") {
+          // 收到单聊
+          channelId = transformIdToChannel({
+            id: message.from,
+            type: ChatTypesEnum.SingleChat,
+          });
+        } else if (message.type == "groupchat") {
+          // 收到群聊
+          channelId = transformIdToChannel({
+            id: message.from,
+            type: ChatTypesEnum.GroupChat,
+          });
+        }
+        if (channelId) {
+          store.dispatch(saveMessage(finMsg, { channelId }));
+        }
       }, //收到文本消息
       onEmojiMessage: function (message) {}, //收到表情消息
       onPictureMessage: function (message) {}, //收到图片消息
@@ -77,7 +100,6 @@ export class IMManager extends EventEmitter {
       onPresence: function (message) {}, //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
       onRoster: function (message) {}, //处理好友申请
       onInviteMessage: function (message) {
-        debugger;
       }, //处理群组邀请
       onOnline: function () {}, //本机网络连接成功
       onOffline: function () {}, //本机网络掉线
@@ -330,7 +352,7 @@ export class IMManager extends EventEmitter {
       queue, //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
       isGroup,
       count,
-      format
+      format,
     };
     return WebIM.conn.fetchHistoryMessages(options);
   }

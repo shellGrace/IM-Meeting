@@ -81,20 +81,18 @@ export const ChatContainer = () => {
       to: finalTo,
       chatType,
     });
-    const m = {
-      from: userName,
-      to: finalTo,
-      msg,
-      time: new Date().getTime(),
-    };
-    console.log("m", m);
     dispatch(
-      saveMessage({
-        from: userName,
-        to: finalTo,
-        msg,
-        time: new Date().getTime(),
-      })
+      saveMessage(
+        {
+          from: userName,
+          to: finalTo,
+          msg,
+          time: new Date().getTime(),
+        },
+        {
+          channelId,
+        }
+      )
     );
     setMsg("");
   };
