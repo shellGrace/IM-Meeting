@@ -60,12 +60,11 @@ export class IMManager extends EventEmitter {
       onOpened: function () {}, //连接成功回调
       onClosed: function () {}, //连接关闭回调
       onTextMessage: function (message) {
-        debugger;
+        // debugger;
       }, //收到文本消息
       onEmojiMessage: function (message) {}, //收到表情消息
       onPictureMessage: function (message) {}, //收到图片消息
       onCmdMessage: function (message) {
-        // debugger;
         console.log("cmd-message", message);
         _this.emit("cmd-message", message);
       }, //收到命令消息
@@ -77,7 +76,7 @@ export class IMManager extends EventEmitter {
       onPresence: function (message) {}, //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
       onRoster: function (message) {}, //处理好友申请
       onInviteMessage: function (message) {
-        debugger;
+        // debugger;
       }, //处理群组邀请
       onOnline: function () {}, //本机网络连接成功
       onOffline: function () {}, //本机网络掉线
