@@ -29,6 +29,18 @@ export const ChatContainer = () => {
   const [msg, setMsg] = useState("");
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
+
+  // TODO: need work (qinzhen)
+  channelId = "1111";
+  chatName = "方便测试";
+
+  // 如果 from === userName 证明是发出去的消息 显示在右边
+  // 如果 from !== userName 证明是收到的消息 显示在左边
+  const messages = [
+    { from: "xxx", to: "yyy", msg: "我是内容12313" },
+    { from: "xxx", to: "yyy", msg: "我是内容4747" },
+    { from: "yyy", to: "xxx", msg: "我是内容1254" },
+  ];
   let { channelId, chatType, to, channelName, messgaes } = useSelector((store) => store.chat);
 
   useEffect(async () => {
