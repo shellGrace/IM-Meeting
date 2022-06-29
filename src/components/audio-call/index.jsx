@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { agoraRTCManager } from "../../utils/rtc/index";
 import { MediaPlayer } from "../media-player";
 import { SvgImg } from "../svg-img";
 import "./index.css";
 
-const AudioContainer = () => {
-  const [remoteAudioTrack, setRemoteAudioTrack] = useState();
+const AudioContainer = ({ onClose }) => {
+  const [remoteUsers, setRemoteUsers] = useState(agoraRTCManager.remoteUsers);
 
-  useEffect(async() => {
-    for (let user of agoraRTCManager.remoteUsers) {
-      user.hasAudio && (await agoraRTCManager.subscribe(user, "audio"));
-      user.audioTrack && setRemoteAudioTrack(user.audioTrack);
-    }
-    // for (let user of agoraRTCManager.remoteUsers) {
-    //   await agoraRTCManager.unsubscribe(user, "audio");
-    //   setRemoteAudioTrack(null);
-    // }
-    // agoraRTCManager.on("user-joined", async (user) => {
-    // });
+  useEffect(() => {
+    agoraRTCManager.on("user-published", () => {
+      setRemoteUsers(agoraRTCManager.remoteUsers);
+    });
+    agoraRTCManager.on("user-unpublished", () => {
+      setRemoteUsers(agoraRTCManager.remoteUsers);
+    });
   }, []);
 
   return (
     <section className="audio-container">
+      <span className="close" onClick={onClose}>
+        关闭
+      </span>
       <div className="conversation-wrapper">
         <div className="user-card">
           <SvgImg className="mic-icon" type="chat-call"></SvgImg>
@@ -30,16 +30,15 @@ const AudioContainer = () => {
             audioTrack={agoraRTCManager.localAudioTrack}
           ></MediaPlayer>
         </div>
-        {agoraRTCManager.remoteUsers.map((user) => (
-          <div className="user-card" key={user.uid}>
-            <p className="user-text">{`remote-(${user.uid})`}</p>
-            <SvgImg className="remote-icon" type="chat-call"></SvgImg>
-            <MediaPlayer
-              videoTrack={undefined}
-              audioTrack={remoteAudioTrack}
-            ></MediaPlayer>
-          </div>
-        ))}
+        {remoteUsers.map((user) =>
+          user.audioTrack ? (
+            <div className="user-card" key={user.uid}>
+              <p className="user-text">{`remote-(${user.uid})`}</p>
+              <SvgImg className="remote-icon" type="chat-call"></SvgImg>
+              <MediaPlayer videoTrack={undefined} audioTrack={user.audioTrack}></MediaPlayer>
+            </div>
+          ) : null
+        )}
       </div>
     </section>
   );

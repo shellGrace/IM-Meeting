@@ -1,50 +1,58 @@
 .audio-container {
-    width: 800px;
-    height: 500px;
-    border: 1px solid #e6e6e6;
-    padding: 5px;
-    border-radius: 5px;
-    background-color: aliceblue;
-    opacity: 0.5;
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    transform: translate(-50%, -50%);
-    overflow: auto;
+  position: relative;
+  width: 800px;
+  height: 500px;
+  border: 1px solid #e6e6e6;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: aliceblue;
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+  z-index: 999;
+}
+
+.audio-container .close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
 }
 
 .conversation-wrapper {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .user-card {
-    width: 180px;
-    height: 120px;
-    margin: 10px;
-    background-color: dimgray;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 180px;
+  height: 120px;
+  margin: 10px;
+  background-color: dimgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .user-text {
-    font-size: 13px;
-    position: fixed;
-    top: 20px;
+  font-size: 13px;
+  position: fixed;
+  top: 20px;
 }
 
 .mic-icon {
-    width: 50px;
-    height: 50px;
-    color: darkgray;
-    position: absolute;
-    top: 50px;
-    left: 70px;
+  width: 50px;
+  height: 50px;
+  color: darkgray;
+  position: absolute;
+  top: 50px;
+  left: 70px;
 }
 
 .remote-icon {
-    width: 50px;
-    height: 50px;
-    color: darkgray;
+  width: 50px;
+  height: 50px;
+  color: darkgray;
 }

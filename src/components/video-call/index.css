@@ -1,28 +1,35 @@
 .video-container {
-    width: 800px;
-    height: 500px;
-    border: 1px solid #e6e6e6;
-    padding: 5px;
-    border-radius: 5px;
-    background-color: aliceblue;
-    opacity: 0.5;
-    position: absolute;
-    right: 100px;
-    overflow: auto;
+  width: 800px;
+  height: 500px;
+  border: 1px solid #e6e6e6;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: aliceblue;
+  position: absolute;
+  right: 100px;
+  overflow: auto;
+  z-index: 999;
+}
+
+.video-container .close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
 }
 
 .local-player-wrapper {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .player-wrapper {
-    width: 180px;
-    height: 120px;
-    margin: 10px;
+  width: 180px;
+  height: 120px;
+  margin: 10px;
 }
 
 .player-text {
-    font-size: 13px;
-    color: dimgray;
+  font-size: 13px;
+  color: dimgray;
 }

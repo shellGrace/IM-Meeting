@@ -8,13 +8,13 @@ import {
   genChannelName,
 } from "../../../utils";
 import "./index.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const manager = IMManager.getInstance();
 
 export const PanelMessages = () => {
   const [sessionList, setSessionList] = useState([]);
-  const { userName } = useDispatch((store) => store.session);
+  const { userName } = useSelector((store) => store.session);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export const PanelMessages = () => {
   const onClickItem = async (channelId) => {
     const chatType = getChatTypefromChannel(channelId);
     const to = getIdfromChannel(channelId);
-    // TODO:channelName groupid
     const channelName = chatType == ChatTypesEnum.GroupChat ? to : genChannelName(userName, to);
     dispatch(
       startChat({

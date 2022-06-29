@@ -8,87 +8,89 @@ import { agoraRTCManager } from "../../utils/rtc";
 import { IMManager } from "../../utils/im";
 import { getIdfromChannel } from "../../utils";
 import { useDispatch } from "react-redux";
-import { saveMessage } from "../../redux/chat";
-import { ChatTypesEnum } from "../../redux/chat";
+import { saveMessage, ChatTypesEnum } from "../../redux/chat";
 import { useSelector } from "react-redux";
+import { CallCard } from "./call-card";
 
 const manager = IMManager.getInstance();
+
+export const CallTypeEnum = {
+  Video: "video",
+  Audio: "audio",
+};
 
 export const ChatContainer = () => {
   const userProfile = "";
 
-  // TODO: need work (lijuan)
-  // AGORA_APP_ID 这些从 env 里面获取 不需要在业务外面获取
-  const AGORA_APP_ID = "c224c383433a4cd0b6aec36cb2e606f0";
-  const AGORA_TOKEN = "";
-  const roomId = "";
-
-  const [calling, setCalling] = useState(false);
   const [videoCalling, setVideoCalling] = useState(false);
   const [audioCalling, setAudioCalling] = useState(false);
   const [msg, setMsg] = useState("");
-  const [callType, setCallType] = useState([]);
+  const [showCard, setShowCard] = useState(false);
+  const [callType, setCallType] = useState("");
   const dispatch = useDispatch();
   const { userName } = useSelector((store) => store.session);
 
-  let { channelId, chatType, to, channelName, messgaes } = useSelector((store) => store.chat);
+  let { channelId, chatType, to, channelName } = useSelector((store) => store.chat);
 
-  useEffect(async () => {
-    manager.on("cmd-message", (msg) => {
-      if(msg === "calling-audio" || msg === "calling-video")
-      setCallType(msg)
-      setCalling(true); // 收到来电消息
+  useEffect(() => {
+    manager.on("onCmdMessage", (msg) => {
+      const { action } = msg;
+      if (action === "calling-audio") {
+        // 收到语音 calling
+        setCallType(CallTypeEnum.Audio);
+        setShowCard(true);
+      } else if (action == "calling-video") {
+        // 收到视频 calling
+        setCallType(CallTypeEnum.Video);
+        setShowCard(true);
+      }
     });
   }, []);
 
-  const joinChannel = async () => {
-    try {
-      await agoraRTCManager.join();
-      agoraRTCManager.on("user-published", async (user, mediaType) => {
-        await agoraRTCManager.subscribe(user, mediaType);
-      });
-      agoraRTCManager.on("user-unpublished", async (user, mediaType) => {
-        await agoraRTCManager.unsubscribe(user, mediaType);
-      });
-      await agoraRTCManager.publish();
-    } catch (err) {
-      alert(err.message);
-      await agoraRTCManager.leave();
-      throw err;
-    }
-  }
+  useEffect(() => {
+    return async () => {
+      // 切换会话时 关闭音视频
+      if (agoraRTCManager.joined) {
+        await agoraRTCManager.unpublish();
+        await agoraRTCManager.leave();
+      }
+    };
+  }, [channelId]);
 
   const onClickChatAudio = async () => {
-    // ues1 根据当前用户来传值
-    manager.sendCmdMessage("ues1", "calling-audio", true);
-    await joinChannel()
+    // 发起语音呼叫
+    const finTo = chatType == ChatTypesEnum.SingleChat ? to : channelName;
+    manager.sendCmdMessage({
+      to: finTo,
+      action: "calling-audio",
+      gType: chatType === ChatTypesEnum.GroupChat,
+    });
+    // 加入rtc频道
+    await agoraRTCManager.join(userName, channelName);
+    // 发流
+    await agoraRTCManager.publish();
+    // 显示语音渲染弹窗
     setAudioCalling(true);
   };
 
   const onClickChatVideo = async () => {
     // 发起视频呼叫
-    // manager.sendCmdMessage("ues1", "calling-video", true);
-    await joinChannel()
+    const finTo = chatType == ChatTypesEnum.SingleChat ? to : channelName;
+    manager.sendCmdMessage({
+      to: finTo,
+      action: "calling-video",
+      gType: chatType === ChatTypesEnum.GroupChat,
+    });
+    // 加入rtc频道
+    await agoraRTCManager.join(userName, channelName);
+    // 发流
+    await agoraRTCManager.publish();
+    // 显示视频渲染弹窗
     setVideoCalling(true);
   };
 
   const onClickChatMore = () => {
     console.log("onClickChatMore");
-  };
-
-  const onClickCalling = () => {
-    // 接通音频通话
-    if (callType === "audio") {
-      setAudioCalling(true);
-    } else {
-      // 接通视频通话
-      setVideoCalling(true);
-    }
-    setCalling(false);
-  };
-
-  const onClickCancel = () => {
-    setCalling(false);
   };
 
   const onClickSendMsg = async () => {
@@ -114,72 +116,84 @@ export const ChatContainer = () => {
     setMsg("");
   };
 
-  return (
+  // 关闭CallCard弹窗
+  const onCancelCallCard = () => {
+    setShowCard(false);
+  };
+
+  // 确认开始音视频弹窗
+  const onConfirmCallCard = async () => {
+    setShowCard(false);
+    if (callType === CallTypeEnum.Audio) {
+      // 加入rtc频道
+      await agoraRTCManager.join(userName, channelName);
+      // 发流
+      await agoraRTCManager.publish();
+      //  显示语音渲染弹窗
+      setAudioCalling(true);
+    } else if (callType === CallTypeEnum.Video) {
+      // 加入rtc频道
+      await agoraRTCManager.join(userName, channelName);
+      // 发流
+      await agoraRTCManager.publish();
+      // 显示视频渲染弹窗
+      setVideoCalling(true);
+    }
+  };
+
+  // 关闭语音和视频
+  const onCloseMedia = async () => {
+    setVideoCalling(false);
+    setAudioCalling(false);
+    if (agoraRTCManager.joined) {
+      await agoraRTCManager.unpublish();
+      await agoraRTCManager.leave();
+    }
+  };
+
+  return channelId ? (
     <section className="chat-container">
       <div className="chat-header">
         <div className="left-box">
           <SvgImg className="user-icon" type={userProfile}></SvgImg>
-          <>
-            <span className="uesr-name">{to} </span>
-            <span>
-              {chatType === ChatTypesEnum.SingleChat ? "单聊" : "群聊"}
-            </span>
-          </>
+          <span className="uesr-name">{to} </span>
+          <span>{chatType === ChatTypesEnum.SingleChat ? "单聊" : "群聊"}</span>
         </div>
         <div className="right-box">
-          {
-            <div className="call-box" onClick={onClickChatAudio}>
-              <SvgImg className="call-icon" type="chat-call"></SvgImg>
-            </div>
-          }
-          {
-            <div className="call-box" onClick={onClickChatVideo}>
-              <SvgImg className="call-icon" type="video-call"></SvgImg>
-            </div>
-          }
+          <div className="call-box" onClick={onClickChatAudio}>
+            <SvgImg className="call-icon" type="chat-call"></SvgImg>
+          </div>
+          <div className="call-box" onClick={onClickChatVideo}>
+            <SvgImg className="call-icon" type="video-call"></SvgImg>
+          </div>
           <div className="call-box" onClick={onClickChatMore}>
             <SvgImg className="call-icon" type="circle-more"></SvgImg>
           </div>
         </div>
       </div>
+      <CallCard
+        type={callType}
+        show={showCard}
+        onCancel={onCancelCallCard}
+        onConfirm={onConfirmCallCard}
+      ></CallCard>
       <ChatContent></ChatContent>
-      {
-        <div className="chat-footer">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter Message"
-            value={msg}
-            onChange={(e) => setMsg(e.target.value)}
-          />
-          <div className="send-box" onClick={onClickSendMsg}>
-            <SvgImg className="send-msg" type="send-msg"></SvgImg>
-          </div>
+      <div className="chat-footer">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter Message"
+          value={msg}
+          onChange={(e) => setMsg(e.target.value)}
+        />
+        <div className="send-box" onClick={onClickSendMsg}>
+          <SvgImg className="send-msg" type="send-msg"></SvgImg>
         </div>
-      }
-      {calling && (
-        <div className="call-card">
-          <span className="text">Calling</span>
-          <div className="action-button">
-            <button type="button" className="btn" onClick={onClickCancel}>
-              cancel
-            </button>
-            <button type="button" className="btn" onClick={onClickCalling}>
-              calling
-            </button>
-          </div>
-        </div>
-      )}
-      {audioCalling && (
-        <div className="audio-area">
-          <AudioContainer></AudioContainer>
-        </div>
-      )}
-      {videoCalling && (
-        <div className="video-area">
-          <VideoContainer></VideoContainer>
-        </div>
-      )}
+      </div>
+      {audioCalling && <AudioContainer onClose={onCloseMedia}></AudioContainer>}
+      {videoCalling && <VideoContainer onClose={onCloseMedia}></VideoContainer>}
     </section>
+  ) : (
+    <section className="chat-container"></section>
   );
 };

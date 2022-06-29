@@ -23,7 +23,8 @@ export const ChatContent = () => {
         queue,
         isGroup,
         count: 50,
-        format: true,
+        format: false,
+        start: 0,
       });
       console.log("历史消息 ", res);
     }

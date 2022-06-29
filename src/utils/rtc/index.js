@@ -31,18 +31,14 @@ class AgoraRTCManager extends EventEmitter {
     this.localAudioTrack = microphoneTrack;
   }
 
-  // appid, channel, token = null, uid = null
-  async join() {
-    const appid = "936ec8275ca248d6839ce2fa697d98c5";
-    const appCertificate = "e2c7e3c6f23b4450b891903e23ffaffc";
-    const userId = "dfvd";
-    const channel = "dfvd";
+  async join(userId, channel) {
     const uid = null;
-
-    const token = RtmTokenBuilder.buildToken(appid, appCertificate, userId, RtmRole.Rtm_User, 0);
-
+    channel = "test";
+    // TODO: need token
+    const token =
+      "0069b676d1d995c4769a458bf8cb890412bIAB8IneYbaQegN/oOnU4QxrtTdPPkAnylyvJjRoDcud13gx+f9gAAAAAEADCmyrTk1O9YgEAAQCTU71i";
     await this.createLocalTracks();
-    await this.client.join(appid, channel, token, uid);
+    await this.client.join(AGORA_APP_ID, channel, token, uid);
     this.listen();
     this.remoteUsers = this.client.remoteUsers || [];
     this.joined = true;
@@ -57,13 +53,15 @@ class AgoraRTCManager extends EventEmitter {
   }
 
   listen() {
-    this.client.on("user-published", (user, mediaType) => {
+    this.client.on("user-published", async (user, mediaType) => {
       console.log("rtc user-published ", user, mediaType);
+      await this.subscribe(user, mediaType);
       this.remoteUsers = Array.from(this.client.remoteUsers);
       this.emit("user-published", user, mediaType);
     });
-    this.client.on("user-unpublished", (user) => {
+    this.client.on("user-unpublished", async (user, mediaType) => {
       console.log("rtc user-unpublished ", user);
+      await this.unsubscribe(user, mediaType);
       this.remoteUsers = Array.from(this.client.remoteUsers);
       this.emit("user-unpublished", user);
     });

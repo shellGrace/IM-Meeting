@@ -77,7 +77,7 @@ export class IMManager extends EventEmitter {
         } else if (message.type == "groupchat") {
           // 收到群聊
           channelId = transformIdToChannel({
-            id: message.from,
+            id: message.to,
             type: ChatTypesEnum.GroupChat,
           });
         }
@@ -88,8 +88,8 @@ export class IMManager extends EventEmitter {
       onEmojiMessage: function (message) {}, //收到表情消息
       onPictureMessage: function (message) {}, //收到图片消息
       onCmdMessage: function (message) {
-        console.log("cmd-message", message);
-        _this.emit("cmd-message", message);
+        console.log("onCmdMessage", message);
+        _this.emit("onCmdMessage", message);
       }, //收到命令消息
       onAudioMessage: function (message) {}, //收到音频消息
       onLocationMessage: function (message) {}, //收到位置消息
@@ -345,14 +345,41 @@ export class IMManager extends EventEmitter {
    * @param {String} options.start - （可选）起始位置的消息 ID，默认从最新一条开始。
    * @param {Boolean} options.format - （可选）是否格式化返回格式, 默认为 `false` （4.0 新语法建议设置为 `true`）。
    */
-  fetchHistoryMessages({ queue = "", isGroup = false, count = 50, format = true }) {
+  fetchHistoryMessages({ queue = "", isGroup = false, count = 50, format = true, start = 0 }) {
     var options = {
       queue, //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
       isGroup,
       count,
       format,
+      start,
     };
     return WebIM.conn.fetchHistoryMessages(options);
+  }
+
+  /**
+   * 获取会话的历史消息。
+   * @param {Object} options
+   * @param {String} options.targetId   - 对方的用户 ID 或者群组 ID 或聊天室 ID。
+   * @param {Number} options.pageSize  - (可选)每次获取的消息条数。2. 取值范围为 [1,50]，默认值为 20。
+   * @param {Number} options.cursor   - （可选）起始消息 ID，默认值为 -1，即从最新消息开始。
+   * @param {Boolean} options.chatType - （可选）会话类型（SDK V4.0)：（Default） `singleChat`：单聊；`groupChat`：群聊；`chatRoom`：聊天室聊天。
+   * @param {String} options.searchDirection - 消息搜索方向：（默认）`up`：按消息创建时间的倒序；`down`：按消息创建时间的正序。
+   */
+  getHistoryMessages({
+    targetId = "",
+    pageSize = 20,
+    cursor = -1,
+    chatType = ChatTypesEnum.SingleChat,
+    searchDirection = "up",
+  }) {
+    const options = {
+      targetId,
+      pageSize,
+      cursor,
+      chatType,
+      searchDirection,
+    };
+    return WebIM.conn.getHistoryMessages(options);
   }
 
   //   获取会话列表

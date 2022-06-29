@@ -33,6 +33,7 @@
   height: 40px;
   border: 1px solid #e6e6e6;
   margin: 10px;
+  cursor: pointer;
 }
 
 .call-icon {
@@ -53,14 +54,6 @@
   top: 50px;
 }
 
-.text {
-  position: absolute;
-  left: 165px;
-  top: 150px;
-  font-size: 33px;
-  font-weight: 500;
-}
-
 .action-button {
   width: 50%;
   display: flex;
@@ -68,11 +61,6 @@
   left: 120px;
   bottom: 50px;
   justify-content: space-between;
-}
-
-.btn {
-  width: 100px;
-  height: 50px;
 }
 
 .chat-footer {
