@@ -34,28 +34,25 @@ export const PanelAllChatRooms = () => {
 
   return (
     <section className="all-chat-rooms">
-      <div style={{marginBottom:10}}>All Chat Rooms</div>
-      <div>
-        <span className="item" onClick={getPublicListGroups}>
-          获取所有群组
-        </span>
-      </div>
-      <div style={{ marginTop: 30 }}>
-        <span className="item" onClick={createGroupNew}>
-          创建群组
-        </span>
+      <div>All Chat Rooms</div>
+      <button className="item" onClick={getPublicListGroups}>
+        获取所有群组
+      </button>
+      <div style={{ marginTop: 5 }}>
         <input
           className="input-wrapper"
           value={groupname}
           onChange={(e) => setGroupname(e.target.value)}
         ></input>
+        <button className="btn-creat" onClick={createGroupNew}>
+          创建群组
+        </button>
       </div>
       <section>
         {groups.map((item) => (
           <div key={item.groupid} className="group-item">
-            <span>{item.groupid}</span>
-            <span style={{ marginLeft: 5 }}>{item.groupname}</span>
-            <span className="add-group" onClick={()=>joinGroup(item.groupid)}>加入群组</span>
+            <span className="group-name">{item.groupid}-{item.groupname}</span>
+            <button className="add-group" onClick={()=>joinGroup(item.groupid)}>加入群组</button>
           </div>
         ))}
       </section>

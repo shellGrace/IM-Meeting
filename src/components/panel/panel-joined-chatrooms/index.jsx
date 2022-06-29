@@ -45,20 +45,19 @@ export const PanelJoinedChatrooms = () => {
   return (
     <section className="joined-chatrooms">
       <div>Joined Chatrooms</div>
-      <div onClick={getMyGroup} className="item">
+      <button onClick={getMyGroup} className="item">
         获取我的群组
-      </div>
+      </button>
       <section>
         {myGroups.map((item) => (
           <div key={item.groupid} className="group-item" onClick={() => onClickGroup(item)}>
-            <span>{item.groupid}</span>
-            <span style={{ marginLeft: 5 }}>{item.groupname}</span>
-            <span style={{ marginLeft: 10 }} onClick={(e) => {
+            <span className="group-name">{item.groupid}-{item.groupname}</span>
+            <button className="btn-quit" onClick={(e) => {
               e.stopPropagation()
               onClickQuitGroup(item.groupid)
             }}>
               退出群组
-            </span>
+            </button>
           </div>
         ))}
       </section>

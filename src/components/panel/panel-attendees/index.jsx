@@ -57,16 +57,16 @@ export const PanelAttendees = () => {
   return (
     <section className="attendees">
       <div>Attendees</div>
+      <button onClick={getRoster} className="item">
+        获取我的好友
+      </button>
       <div className="item">
-        <span onClick={addContact}>添加好友</span>
         <input
           className="input-wrapper"
           value={friendName}
           onChange={(e) => setFriendName(e.target.value)}
         ></input>
-      </div>
-      <div onClick={getRoster} className="item">
-        获取我的好友
+        <button className="btn-add" onClick={addContact}>添加好友</button>
       </div>
       <section>
         {friends.map((item) => (

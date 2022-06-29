@@ -44,9 +44,9 @@ export const PanelMessages = () => {
   return (
     <section className="messages">
       <div>Messages</div>
-      <div onClick={getSessionList} className="item">
+      <button onClick={getSessionList} className="item">
         获取会话列表
-      </div>
+      </button>
       <section>
         {sessionList.map((item) => (
           <div
@@ -60,7 +60,7 @@ export const PanelMessages = () => {
                 ? "单聊"
                 : "群聊"}
             </span>
-            <span className="time">{formatTime(item.meta.timestamp)}</span>
+            <span className="time">-{formatTime(item.meta.timestamp)}</span>
           </div>
         ))}
       </section>

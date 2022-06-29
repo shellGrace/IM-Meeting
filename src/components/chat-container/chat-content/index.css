@@ -31,7 +31,7 @@
 
 /* 来自自己的消息 */
 .chat-content .is-me .msg-bubble {
-  background-color: green;
+  background-color: #a9ea7a;
   align-self: end;
 }
 

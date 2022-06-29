@@ -40,3 +40,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+.user-box {
+  margin: 10px 0 0 10px;
+}

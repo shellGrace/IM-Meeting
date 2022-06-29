@@ -7,6 +7,7 @@ import "./index.css";
 
 // 登录页
 export const LoginPage = () => {
+  const [register, setRegister] = useState(false);
   const [sessionInfo, setSessionInfo] = useState({
     userId: "",
     roomId: "",
@@ -42,14 +43,15 @@ export const LoginPage = () => {
       username: sessionInfo.userName,
       password: sessionInfo.userName,
     });
+    setRegister(true);
   };
 
   return (
     <div className="login-page">
       <section className="login-body">
-        <div className="body-header">XXX Meeting</div>
+        <div className="body-header">IM-Meeting</div>
         <section className="body-item">
-          <span>User Name</span>
+          <span>UserName</span>
           <input
             className="input-wrapper"
             value={sessionInfo.userName}
@@ -65,9 +67,13 @@ export const LoginPage = () => {
           <span className="btn" onClick={onClickRegister}>
             注册
           </span>
-          <span className="btn" onClick={onClickEnter} style={{ marginLeft: 10 }}>
+          <span className="btn login" onClick={onClickEnter}>
             登录
           </span>
+          <br />
+          <br />
+          <br />
+          {register && <span className="register-text">register success!</span>}
         </div>
       </section>
     </div>

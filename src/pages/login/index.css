@@ -45,7 +45,15 @@
 }
 
 .input-wrapper {
-  margin-left: 40px;
+  margin-left: 10px;
   height: 22px;
   width: 200px;
+}
+
+.register-text {
+  font-size: 15px;
+}
+
+.login {
+  margin-left: 30px;
 }
