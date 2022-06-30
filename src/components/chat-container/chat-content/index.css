@@ -24,7 +24,8 @@
   max-width: 300px;
   word-break: break-all;
   word-wrap: break-word;
-  background-color: pink;
+  background-color: #bebebe;
+  align-self: start;
   padding: 7px;
   border-radius: 4px;
 }
