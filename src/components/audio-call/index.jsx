@@ -15,6 +15,11 @@ const AudioContainer = ({ onClose }) => {
     agoraRTCManager.on("user-unpublished", () => {
       setRemoteUsers(agoraRTCManager.remoteUsers);
     });
+
+    return () => {
+      agoraRTCManager.removeAllListeners("user-published");
+      agoraRTCManager.removeAllListeners("user-unpublished");
+    };
   }, []);
 
   return (

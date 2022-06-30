@@ -6,6 +6,7 @@
   border-radius: 7px;
   position: absolute;
   top: 50px;
+  z-index: 999;
 }
 
 .text {

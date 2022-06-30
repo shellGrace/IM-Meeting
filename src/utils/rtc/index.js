@@ -1,6 +1,5 @@
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { EventEmitter } from "events";
-import { RtmTokenBuilder, RtmRole } from "agora-access-token";
 
 class AgoraRTCManager extends EventEmitter {
   static getInstance() {
@@ -31,14 +30,13 @@ class AgoraRTCManager extends EventEmitter {
     this.localAudioTrack = microphoneTrack;
   }
 
-  async join(userId, channel) {
-    const uid = null;
+  async join(channel) {
     channel = "test";
     // TODO: need token
     const token =
-      "0069b676d1d995c4769a458bf8cb890412bIAB8IneYbaQegN/oOnU4QxrtTdPPkAnylyvJjRoDcud13gx+f9gAAAAAEADCmyrTk1O9YgEAAQCTU71i";
+      "0069b676d1d995c4769a458bf8cb890412bIACukKcdH+SWTRjLn1l1JdQK23VY6RhqgBTYkjCyNALc8gx+f9gAAAAAEAAFUAr/AoK+YgEAAQACgr5i";
     await this.createLocalTracks();
-    await this.client.join(AGORA_APP_ID, channel, token, uid);
+    await this.client.join(AGORA_APP_ID, channel, token, null);
     this.listen();
     this.remoteUsers = this.client.remoteUsers || [];
     this.joined = true;

@@ -17,8 +17,8 @@ export const PanelMessages = () => {
   const { userName } = useSelector((store) => store.session);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    getSessionList();
+  useEffect(async () => {
+    await getSessionList();
   }, []);
 
   const getSessionList = async () => {

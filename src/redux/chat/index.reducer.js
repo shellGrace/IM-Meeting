@@ -11,7 +11,10 @@ import { ChatActionTypes, ChatTypesEnum } from "./index.type";
 
 const initState = {
   channelId: "", // 会话id
-  channelName: "", // 会话名字 (用作rtc channel)  如果是单聊  xxx_yyy 又会话双方id组成   群聊就是群聊groupid
+  // 会话名字 (用作agora rtc channel)
+  // 如果是单聊  xxx_yyy 又会话双方id组成
+  // 群聊就是群聊groupid
+  channelName: "",
   chatType: "", // ChatTypesEnum 会话类型
   to: "", // 会话对方
   msgMap: {}, // 会话消息

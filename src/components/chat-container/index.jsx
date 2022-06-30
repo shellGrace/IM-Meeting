@@ -45,6 +45,9 @@ export const ChatContainer = () => {
         setShowCard(true);
       }
     });
+    return () => {
+      manager.removeAllListeners("onCmdMessage");
+    };
   }, []);
 
   useEffect(() => {
@@ -66,7 +69,7 @@ export const ChatContainer = () => {
       gType: chatType === ChatTypesEnum.GroupChat,
     });
     // 加入rtc频道
-    await agoraRTCManager.join(userName, channelName);
+    await agoraRTCManager.join(channelName);
     // 发流
     await agoraRTCManager.publish();
     // 显示语音渲染弹窗
@@ -82,7 +85,7 @@ export const ChatContainer = () => {
       gType: chatType === ChatTypesEnum.GroupChat,
     });
     // 加入rtc频道
-    await agoraRTCManager.join(userName, channelName);
+    await agoraRTCManager.join(channelName);
     // 发流
     await agoraRTCManager.publish();
     // 显示视频渲染弹窗
@@ -126,14 +129,14 @@ export const ChatContainer = () => {
     setShowCard(false);
     if (callType === CallTypeEnum.Audio) {
       // 加入rtc频道
-      await agoraRTCManager.join(userName, channelName);
+      await agoraRTCManager.join(channelName);
       // 发流
       await agoraRTCManager.publish();
       //  显示语音渲染弹窗
       setAudioCalling(true);
     } else if (callType === CallTypeEnum.Video) {
       // 加入rtc频道
-      await agoraRTCManager.join(userName, channelName);
+      await agoraRTCManager.join(channelName);
       // 发流
       await agoraRTCManager.publish();
       // 显示视频渲染弹窗

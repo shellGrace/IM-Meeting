@@ -1,4 +1,5 @@
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpackMerge = require("webpack-merge");
 const path = require("path");
@@ -7,8 +8,9 @@ const baseConfig = require("./webpack.base");
 const packageJson = require("../package.json");
 const { name } = packageJson;
 const { ROOT_PATH, SRC_PATH } = require("./utils/index");
-const entry = path.resolve(SRC_PATH, "./index.tsx");
 
+const entry = path.resolve(SRC_PATH, "./index.jsx");
+const template = path.resolve(ROOT_PATH, "./public/index.html");
 
 const config = {
   mode: "production",
@@ -18,7 +20,8 @@ const config = {
     library: name,
     libraryTarget: "umd",
     libraryExport: "default",
-    path: path.resolve(ROOT_PATH, "lib"),
+    publicPath: "./",
+    path: path.resolve(ROOT_PATH, "dist"),
     clean: true,
   },
   module: {
@@ -47,7 +50,12 @@ const config = {
       new CssMinimizerPlugin(),
     ],
   },
-  plugins: [],
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: "index.html",
+      template: template,
+    }),
+  ],
 };
 
 const mergedConfig = webpackMerge.merge(baseConfig, config);

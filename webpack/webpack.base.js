@@ -6,17 +6,13 @@ const data = require("dotenv").config().parsed || {};
 
 const { AGORA_APP_ID = "", AGORA_APP_CERTIFICATE = "", EASEMOB_APP_KEY = "" } = data;
 
-console.log("dev data", data);
+console.log("env ", data);
 
 module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx"],
     alias: {
       "@": path.resolve(ROOT_PATH, "src"),
-    },
-    fallback: {
-      crypto: require.resolve("crypto-browserify"),
-      stream: require.resolve("stream-browserify"),
     },
   },
   module: {
@@ -60,10 +56,6 @@ module.exports = {
   },
   plugins: [
     new webpackbar(),
-    new webpack.ProvidePlugin({
-      // process: "process/browser",
-      Buffer: ["buffer", "Buffer"],
-    }),
     new webpack.DefinePlugin({
       AGORA_APP_ID: JSON.stringify(AGORA_APP_ID),
       AGORA_APP_CERTIFICATE: JSON.stringify(AGORA_APP_CERTIFICATE),
