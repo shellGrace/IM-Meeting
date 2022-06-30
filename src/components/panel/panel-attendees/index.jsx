@@ -71,7 +71,7 @@ export const PanelAttendees = () => {
       <section>
         {friends.map((item) => (
           <div key={item} className="group-item">
-            <span onClick={() => onClickStartChat(item)}>{item}</span>
+            <span className="friend-name" onClick={() => onClickStartChat(item)}>{item}</span>
           </div>
         ))}
       </section>
