@@ -1,40 +1,40 @@
-import websdk from "easemob-websdk";
-import { EventEmitter } from "events";
-import { saveMessage, ChatTypesEnum } from "../../redux/chat";
-import store from "../../redux";
-import config from "./WebIMConfig";
-import { transformIdToChannel } from "../util";
+import websdk from 'easemob-websdk'
+import { EventEmitter } from 'events'
+import { saveMessage, ChatTypesEnum } from '../../redux/chat'
+import store from '../../redux'
+import config from './WebIMConfig'
+import { transformIdToChannel } from '../util'
 
-const PREFIX = "[im] ";
+const PREFIX = '[im] '
 
 const log = (str) => {
-  console.log(PREFIX + str);
-};
+  console.log(PREFIX + str)
+}
 
 const logErr = (str) => {
-  console.error(PREFIX + str);
-};
+  console.error(PREFIX + str)
+}
 
-let WebIM = window.WebIM || {};
+let WebIM = window.WebIM || {}
 
 export class IMManager extends EventEmitter {
-  static _shared = null;
-  inited = false;
+  static _shared = null
+  inited = false
 
   static getInstance() {
     if (!IMManager._shared) {
-      IMManager._shared = new IMManager();
+      IMManager._shared = new IMManager()
     }
-    return IMManager._shared;
+    return IMManager._shared
   }
 
   // 初始化
   init() {
     if (this.inited) {
-      return false;
+      return false
     }
-    WebIM = window.WebIM || {};
-    WebIM.config = config;
+    WebIM = window.WebIM || {}
+    WebIM.config = config
 
     let options = {
       appKey: WebIM.config.appkey,
@@ -48,15 +48,15 @@ export class IMManager extends EventEmitter {
       autoReconnectInterval: WebIM.config.autoReconnectInterval,
       delivery: WebIM.config.delivery,
       useOwnUploadFun: WebIM.config.useOwnUploadFun,
-    };
-    WebIM.conn = new websdk.connection(options);
-    console.log("===WebIM.conn", WebIM.conn);
-    this.inited = true;
-    this.listen();
+    }
+    WebIM.conn = new websdk.connection(options)
+    console.log('===WebIM.conn', WebIM.conn)
+    this.inited = true
+    this.listen()
   }
 
   listen() {
-    let _this = this;
+    let _this = this
     WebIM.conn.listen({
       onOpened: function () {}, //连接成功回调
       onClosed: function () {}, //连接关闭回调
@@ -66,30 +66,30 @@ export class IMManager extends EventEmitter {
           to: message.to,
           msg: message.sourceMsg,
           time: message.time,
-        };
-        let channelId = "";
-        if (message.type == "chat") {
+        }
+        let channelId = ''
+        if (message.type == 'chat') {
           // 收到单聊
           channelId = transformIdToChannel({
             id: message.from,
             type: ChatTypesEnum.SingleChat,
-          });
-        } else if (message.type == "groupchat") {
+          })
+        } else if (message.type == 'groupchat') {
           // 收到群聊
           channelId = transformIdToChannel({
             id: message.to,
             type: ChatTypesEnum.GroupChat,
-          });
+          })
         }
         if (channelId) {
-          store.dispatch(saveMessage(finMsg, { channelId }));
+          store.dispatch(saveMessage(finMsg, { channelId }))
         }
       }, //收到文本消息
       onEmojiMessage: function (message) {}, //收到表情消息
       onPictureMessage: function (message) {}, //收到图片消息
       onCmdMessage: function (message) {
-        console.log("onCmdMessage", message);
-        _this.emit("onCmdMessage", message);
+        console.log('onCmdMessage', message)
+        _this.emit('onCmdMessage', message)
       }, //收到命令消息
       onAudioMessage: function (message) {}, //收到音频消息
       onLocationMessage: function (message) {}, //收到位置消息
@@ -105,7 +105,7 @@ export class IMManager extends EventEmitter {
       onBlacklistUpdate: function (list) {
         //黑名单变动
         // 查询黑名单，将好友拉黑，将好友从黑名单移除都会回调这个函数，list则是黑名单现有的所有好友信息
-        console.log(list);
+        console.log(list)
       },
       onRecallMessage: function (message) {}, //收到撤回消息回调
       onReceivedMessage: function (message) {}, //收到消息送达服务器回执
@@ -118,16 +118,16 @@ export class IMManager extends EventEmitter {
         await _this.dealInvitation({
           accept: true,
           username: message.from,
-        });
-        _this.emit("onContactInvited", message);
+        })
+        _this.emit('onContactInvited', message)
       }, // 收到好友邀请
       onContactDeleted: function () {}, // 被删除时回调此方法
       onContactAdded: function () {}, // 增加了联系人时回调此方法
       onContactRefuse: function () {}, // 好友请求被拒绝
       onContactAgreed: function (message) {
-        _this.emit("onContactAgreed", message);
+        _this.emit('onContactAgreed', message)
       }, // 好友请求被同意
-    });
+    })
   }
 
   // 注册用户
@@ -136,95 +136,106 @@ export class IMManager extends EventEmitter {
       var options = {
         username: username,
         password: password,
-        nickname: "nickname",
+        nickname: 'nickname',
         appKey: WebIM.config.appkey,
         success: function () {
-          log("register success");
-          resolve();
+          log('register success')
+          resolve()
         },
         error: function (err) {
-          let errorData = JSON.parse(err.data);
-          if (errorData.error === "duplicate_unique_property_exists") {
-            console.log("用户已存在！");
-          } else if (errorData.error === "illegal_argument") {
-            if (errorData.error_description === "USERNAME_TOO_LONG") {
-              console.log("用户名超过64个字节！");
+          let errorData = JSON.parse(err.data)
+          if (errorData.error === 'duplicate_unique_property_exists') {
+            console.log('用户已存在！')
+          } else if (errorData.error === 'illegal_argument') {
+            if (errorData.error_description === 'USERNAME_TOO_LONG') {
+              console.log('用户名超过64个字节！')
             } else {
-              console.log("用户名不合法！");
+              console.log('用户名不合法！')
             }
-          } else if (errorData.error === "unauthorized") {
-            console.log("注册失败，无权限！");
-          } else if (errorData.error === "resource_limited") {
-            console.log("您的App用户注册数量已达上限,请升级至企业版！");
+          } else if (errorData.error === 'unauthorized') {
+            console.log('注册失败，无权限！')
+          } else if (errorData.error === 'resource_limited') {
+            console.log('您的App用户注册数量已达上限,请升级至企业版！')
           }
-          reject();
+          reject()
         },
-      };
-      console.log(WebIM.conn);
-      WebIM.conn.registerUser(options);
-    });
+      }
+      console.log(WebIM.conn)
+      WebIM.conn.registerUser(options)
+    })
   }
 
   // 登录
-  login({ username, password }) {
+  async login({ username, password }) {
     let potions = {
       user: username,
       pwd: password,
       appKey: WebIM.config.appkey,
-    };
-    return WebIM.conn.open(potions);
+    }
+    const res = await WebIM.conn.open(potions)
+    // WebIM.conn.addEventHandler('MESSAGES', {
+    //   onPresenceStatusChange: (msg) => {
+    //     // 这里可以处理订阅用户状态更新后的逻辑。
+    //     console.log('状态更新', msg)
+    //   },
+    // })
+    // setTimeout(() => {
+    //   // 发布在线状态
+    //   this.publishPresence('online')
+    // }, 10000)
+    return res
   }
 
   // 退出
   logout() {
-    WebIM.conn.close();
+    WebIM.conn.close()
   }
 
   // 发送命令消息
   sendCmdMessage({
-    to = "", // 目标用户名
-    action = "", // 行为
+    to = '', // 目标用户名
+    action = '', // 行为
     gType, //判断消息类型是否为群组
   }) {
     return new Promise((resolve, reject) => {
-      var id = WebIM.conn.getUniqueId();
-      var message = new WebIM.message("cmd", id);
+      var id = WebIM.conn.getUniqueId()
+      var message = new WebIM.message('cmd', id)
       message.set({
         to,
         action,
         // ext :{'extmsg':'extends messages'},    //用户自扩展的消息内容（群聊用法相同）
         success: function (id, serverMsgId) {
-          console.log("发送命令消息成功", id, serverMsgId);
-          resolve();
+          console.log('发送命令消息成功', id, serverMsgId)
+          resolve()
         },
         fail: function (err) {
-          console.log("发送命令消息失败", err);
-          reject(err);
+          console.log('发送命令消息失败', err)
+          reject(err)
         },
-      });
+      })
       //判断消息类型是否为群组
       if (gType) {
-        message.setGroup("groupchat");
+        message.setGroup('groupchat')
       }
-      WebIM.conn.send(message.body);
-    });
+      WebIM.conn.send(message.body)
+    })
   }
 
   // 发送文本消息
   sendText({
-    msg = "",
-    to = "",
-    chatType = "singleChat", // singleChat |  groupChat
+    msg = '',
+    to = '',
+    chatType = 'singleChat', // singleChat |  groupChat
   }) {
     return new Promise((resolve, reject) => {
-      var id = WebIM.conn.getUniqueId();
-      var message = new WebIM.message("txt", id);
+      var id = WebIM.conn.getUniqueId()
+      var message = new WebIM.message('txt', id)
       let option = {
         msg, // 消息内容
         to, // 接收消息对象 (群组id) （用户id）
         chatType, // 群聊类型设置为群聊
         success: function (res) {
-          resolve();
+          resolve()
         }, // 对成功的相关定义，sdk会将消息id登记到日志进行备份处理
         fail: function (e) {
           // 失败原因:
@@ -237,18 +248,18 @@ export class IMManager extends EventEmitter {
           // e.type === '501' 消息包含敏感词
           // e.type === '502' 被设置的自定义拦截捕获
           // e.type === '503' 未知错误
-          console.error(e);
-          reject(e);
+          console.error(e)
+          reject(e)
         },
-      };
-      message.set(option);
-      WebIM.conn.send(message.body);
-    });
+      }
+      message.set(option)
+      WebIM.conn.send(message.body)
+    })
   }
 
   // 查询好友列表
   getContacts() {
-    return WebIM.conn.getContacts();
+    return WebIM.conn.getContacts()
   }
 
   // 创建群组
@@ -263,13 +274,13 @@ export class IMManager extends EventEmitter {
         allowinvites: true, // true：允许群成员邀请人加入此群，false：只有群主才可以往群里加人 注意公开群（public：true),则不允许群成员邀请别人加入此群
         inviteNeedConfirm: false, // 邀请加群，被邀请人是否需要确认。true 为需要被邀请者同意才会进群
       },
-    };
-    return WebIM.conn.createGroupNew(options);
+    }
+    return WebIM.conn.createGroupNew(options)
   }
 
   // 获取我的群组
   getMyGroup() {
-    return WebIM.conn.getGroup();
+    return WebIM.conn.getGroup()
   }
 
   // 分页获取公开群
@@ -277,51 +288,51 @@ export class IMManager extends EventEmitter {
     let options = {
       limit, // 预期每页获取的记录数
       cursor, // 游标
-    };
-    return WebIM.conn.listGroups(options);
+    }
+    return WebIM.conn.listGroups(options)
   }
 
   // 向群组发出入群申请
-  joinGroup({ groupId = "", msg = "" }) {
+  joinGroup({ groupId = '', msg = '' }) {
     let options = {
       groupId: groupId, // 群组ID
       message: msg, // 请求信息
-    };
-    return WebIM.conn.joinGroup(options);
+    }
+    return WebIM.conn.joinGroup(options)
   }
 
   // 解散群组
   dissolveGroup({ groupId }) {
     let option = {
       groupId,
-    };
-    return WebIM.conn.dissolveGroup(option);
+    }
+    return WebIM.conn.dissolveGroup(option)
   }
 
   // 退出群组
   quitGroup({ groupId }) {
     let option = {
       groupId,
-    };
-    return WebIM.conn.quitGroup(option);
+    }
+    return WebIM.conn.quitGroup(option)
   }
 
   // 查询好友列表
   getRoster() {
-    return WebIM.conn.getRoster();
+    return WebIM.conn.getRoster()
   }
 
   // 添加好友
   addContact({
-    username = "", // 用户名
-    msg = "", // 消息
+    username = '', // 用户名
+    msg = '', // 消息
   }) {
-    return WebIM.conn.addContact(username, msg);
+    return WebIM.conn.addContact(username, msg)
   }
 
   // 删除好友
   deleteContact(username) {
-    return WebIM.conn.deleteContact(username);
+    return WebIM.conn.deleteContact(username)
   }
 
   //  处理好友请求
@@ -330,9 +341,9 @@ export class IMManager extends EventEmitter {
     username, // 用户名
   }) {
     if (accept) {
-      return WebIM.conn.acceptInvitation(username);
+      return WebIM.conn.acceptInvitation(username)
     } else {
-      return WebIM.conn.declineInvitation(username);
+      return WebIM.conn.declineInvitation(username)
     }
   }
 
@@ -345,15 +356,21 @@ export class IMManager extends EventEmitter {
    * @param {String} options.start - （可选）起始位置的消息 ID，默认从最新一条开始。
    * @param {Boolean} options.format - （可选）是否格式化返回格式, 默认为 `false` （4.0 新语法建议设置为 `true`）。
    */
-  fetchHistoryMessages({ queue = "", isGroup = false, count = 50, format = true, start = 0 }) {
+  fetchHistoryMessages({
+    queue = '',
+    isGroup = false,
+    count = 50,
+    format = true,
+    start = 0,
+  }) {
     var options = {
       queue, //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
       isGroup,
       count,
       format,
       start,
-    };
-    return WebIM.conn.fetchHistoryMessages(options);
+    }
+    return WebIM.conn.fetchHistoryMessages(options)
   }
 
   /**
@@ -366,11 +383,11 @@ export class IMManager extends EventEmitter {
    * @param {String} options.searchDirection - 消息搜索方向：（默认）`up`：按消息创建时间的倒序；`down`：按消息创建时间的正序。
    */
   getHistoryMessages({
-    targetId = "",
+    targetId = '',
     pageSize = 20,
     cursor = -1,
     chatType = ChatTypesEnum.SingleChat,
-    searchDirection = "up",
+    searchDirection = 'up',
   }) {
     const options = {
       targetId,
@@ -378,8 +395,8 @@ export class IMManager extends EventEmitter {
       cursor,
       chatType,
       searchDirection,
-    };
-    return WebIM.conn.getHistoryMessages(options);
+    }
+    return WebIM.conn.getHistoryMessages(options)
   }
 
   //   获取会话列表
@@ -387,7 +404,7 @@ export class IMManager extends EventEmitter {
   // 建议一个页面只需要在初始时调用一次。使用该功能需要联系您的商务经理进行开通。（您可以在环信通讯云管理后台首页，扫描二维码联系您的商务经理）
   // 特别注意：登陆ID不要为大小写混用的ID，拉取会话列表大小写ID混用会出现拉取会话列表为空。
   getSessionList() {
-    return WebIM.conn.getSessionList();
+    return WebIM.conn.getSessionList()
     /**
     返回参数说明
     channel_infos - 所有会话
@@ -419,13 +436,40 @@ export class IMManager extends EventEmitter {
   }
 
   // 删除会话
-  deleteSession({ channel, chatType = "singleChat", deleteRoam = true } = {}) {
+  deleteSession({ channel, chatType = 'singleChat', deleteRoam = true } = {}) {
     WebIM.conn.deleteSession({
       channel, // 会话 ID（对方的 userID 或群组 ID）。
       chatType, // 会话类型 singleChat（单聊） groupChat（群聊）。
       deleteRoam: true, // 是否同时删除服务端漫游消息。
-    });
+    })
+  }
+
+  // 订阅指定用户的在线状态
+  //  option => usernames,expiry
+  subscribePresence(option) {
+    let defaultOption = {
+      usernames: [],
+      expiry: 7 * 24 * 3600, // 单位为秒
+    }
+    const finOption = Object.assign(defaultOption, option)
+    return WebIM.conn.subscribePresence(finOption)
+  }
+
+  // 取消订阅指定用户的在线状态
+  unsubscribePresence(option) {
+    // option = {
+    //   usernames: ['Alice','Bob']
+    // }
+    return WebIM.conn.unsubscribePresence(option)
+  }
+
+  // 发布自定义在线状态
+  publishPresence(msg) {
+    let option = {
+      description: msg,
+    }
+    return WebIM.conn.publishPresence(option)
   }
 }
 
-export default WebIM;
+export default WebIM
